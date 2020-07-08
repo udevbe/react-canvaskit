@@ -1,24 +1,42 @@
-export interface CkTypeConstructor {
-  new (props: { [key: string]: any }, root: CkContainer): CkType
+import type { CanvasKit, SkCanvas, SkSurface } from 'canvaskit-wasm'
+
+export type Props = { [key: string]: any }
+
+export interface CkParentContext<T> {
+  canvasKit: CanvasKit,
+  skInstance: T
 }
 
-export interface CkType {
+export class CkInstance<Type extends string, P extends Props, SkInstance> {
+  readonly type: Type
+  readonly skInstance: SkInstance
+  readonly props: P
+
+  constructor (type: Type, props: P, skInstance: SkInstance) {
+    this.type = type
+    this.props = props
+    this.skInstance = skInstance
+  }
 }
 
-export interface CkContainer extends CkType {
-
+export interface ckInstanceCreator<T extends string, P extends Props, SkInstance, ParentContext extends CkParentContext<any>> {
+  (props: Partial<P>, parentContext: ParentContext): CkInstance<T, Partial<P>, SkInstance>
 }
 
 export interface CkCanvasProps {
-  width: number,
-  height: number
   clear: Color
 }
 
-export class CkCanvas implements CkContainer {
-  constructor (props: Partial<CkCanvasProps>) {
+function toSkColor (context: CkParentContext<any>, color: Color) {
+  return context.canvasKit.Color(color.fRed, color.fGreen, color.fBlue, color.fAlpha)
+}
 
+const ckCanvasCreator: ckInstanceCreator<'ck-canvas', CkCanvasProps, SkCanvas, CkParentContext<SkSurface>> = (props, parentContext) => {
+  const skCanvas = parentContext.skInstance.getCanvas()
+  if (props.clear) {
+    skCanvas.clear(toSkColor(parentContext, props.clear))
   }
+  return new CkInstance('ck-canvas', props, skCanvas)
 }
 
 export interface Color {
@@ -197,12 +215,6 @@ export interface Paint {
   style: PaintStyle
 }
 
-export class Line implements CkType {
-  constructor (props: Partial<LineProps>) {
-
-  }
-}
-
 export interface LineProps {
   x1: number,
   y1: number,
@@ -264,18 +276,13 @@ export interface ParagraphProps {
   y: number
 }
 
-export class Paragraph implements CkType {
-  constructor (root: CkContainer, props: Partial<ParagraphProps>) {
-  }
-}
-
 const COMPONENTS: { [key: string]: CkTypeConstructor | undefined } = {
-  CkCanvas,
-  Paragraph,
-  Line
+  'sk-canvas': ckCanvasCreator,
+  'sk-line': ckLineCreator,
+  'sk-paragraph': ckParagraphCreator
 }
 
-export function createElement (type: string, props: { [key: string]: any }, root: CkContainer) {
+export function createCkElement (type: string, props: Props, root: CkParentContext<any>): CkInstance<string, Props, any> {
   const ctor = COMPONENTS[type]
   if (ctor) {
     return new ctor(props, root)
@@ -283,3 +290,15 @@ export function createElement (type: string, props: { [key: string]: any }, root
     return undefined
   }
 }
+
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'sk-canvas': Partial<CkCanvasProps>
+      'sk-line': Partial<LineProps>
+      'sk-paragraph': Partial<ParagraphProps>
+    }
+  }
+}
+
+

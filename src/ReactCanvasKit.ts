@@ -1,77 +1,109 @@
-import Reconciler, { ReactNodeList } from 'react-reconciler'
-import { createElement } from './SkiaElementTypes'
+import type { CanvasKit } from 'canvaskit-wasm'
+import * as CanvasKitInit from 'canvaskit-wasm'
+import type { HostConfig, ReactNodeList } from 'react-reconciler'
+import * as  ReactReconciler from 'react-reconciler'
+import { CkInstance, CkParentContext, createCkElement, Props } from './SkiaElementTypes'
 
-const hostConfig = {
-  appendInitialChild(parentInstance, child) {
-    // TODO
+export type ContainerContext = CkParentContext<any>
+
+// @ts-ignore
+const hostConfig: HostConfig<string,// Type
+  Props, // Props
+  ContainerContext, // Container
+  CkInstance<string, Props, any>, // Instance
+  any, // TextInstance
+  any, // HydratableInstance
+  any, // PublicInstance
+  CanvasKit, // HostContext
+  any, // UpdatePayload
+  any, // ChildSet
+  any, // TimeoutHandle
+  any // NoTimeout
+  > = {
+  now: Date.now,
+  supportsMutation: true,
+  appendChildToContainer (container: ContainerContext, child: CkInstance<string, Props, any>) {
+    console.log('appendChildToContainer')
   },
-
-  createInstance(type, props, internalInstanceHandle) {
-    return createElement(type, props, internalInstanceHandle);
+  getRootHostContext (rootContainerInstance: ContainerContext): CanvasKit {
+    console.log('getRootHostContext')
+    return rootContainerInstance.canvasKit
   },
-
-  createTextInstance(text, rootContainerInstance, internalInstanceHandle) {
-    return text;
+  getChildHostContext (parentHostContext: CanvasKit, type: any, rootContainerInstance: ContainerContext): CanvasKit {
+    console.log('getChildHostContext')
+    return parentHostContext
   },
-
-  finalizeInitialChildren(wordElement, type, props) {
-    return false;
+  shouldSetTextContent (type: string, props: Props): boolean {
+    console.log('shouldSetTextContent')
+    return true
   },
-
-  getPublicInstance(inst) {
-    return inst;
+  createTextInstance (
+    text: string,
+    rootContainerInstance: ContainerContext,
+    hostContext: CanvasKit,
+    internalInstanceHandle: ReactReconciler.OpaqueHandle): any {
+    console.log('createTextInstance')
   },
-
-  prepareForCommit() {
-    // noop
+  createInstance (
+    type: string,
+    props: Props,
+    rootContainerInstance: ContainerContext,
+    hostContext: CanvasKit,
+    internalInstanceHandle: ReactReconciler.OpaqueHandle): CkInstance<string, Props, any> {
+    console.log('createInstance')
+    return createCkElement(type, props, rootContainerInstance)
   },
-
-  prepareUpdate(wordElement, type, oldProps, newProps) {
-    return true;
+  appendInitialChild (parentInstance: CkInstance<string, Props, any>, child: CkInstance<string, Props, any>) {
+    console.log('appendInitialChild')
   },
-
-  resetAfterCommit() {
-    // noop
+  finalizeInitialChildren (
+    parentInstance: CkInstance<string, Props, any>,
+    type: string,
+    props: Props,
+    rootContainerInstance: ContainerContext,
+    hostContext: CanvasKit): boolean {
+    console.log('finalizeInitialChildren')
+    return false
   },
-
-  resetTextContent(wordElement) {
-    // noop
+  prepareForCommit (containerInfo: ContainerContext) {
+    console.log('prepareForCommit')
   },
-
-  getRootHostContext(rootInstance) {
-    // You can use this 'rootInstance' to pass data from the roots.
-  },
-
-  getChildHostContext() {
-    // TODO
-    //return emptyObject;
-  },
-
-  shouldSetTextContent(type, props) {
-    return false;
-  },
-
-  now: () => {
-  },
-
-  supportsMutation: false
-}
-
-// @ts-ignore ignore other reconciler methods for now
-let CustomRenderer = Reconciler(hostConfig)
-
-const ReactCanvasKit = {
-  render (root: ReactNodeList, canvas: HTMLCanvasElement | OffscreenCanvas) {
-    const container = CustomRenderer.createContainer(canvas, false, false)
-    CustomRenderer.updateContainer(root, container, null, () => {
-    })
-    CustomRenderer.injectIntoDevTools({
-      bundleType: 1, // 0 for PROD, 1 for DEV
-      version: '0.0.1', // version for your renderer
-      rendererPackageName: 'react-canvaskit', // package name
-      findHostInstanceByFiber: CustomRenderer.findHostInstance // host instance (root)
-    })
+  resetAfterCommit (containerInfo: ContainerContext) {
+    console.log('resetAfterCommit')
   }
 }
 
-export default ReactCanvasKit
+const canvaskitReconciler = ReactReconciler(hostConfig)
+
+
+export async function render (element: ReactNodeList, canvas: HTMLCanvasElement, callback = () => {
+}) {
+  const isConcurrent = false
+  const hydrate = false
+
+  // Creates root fiber node.
+  // @ts-ignore
+  const canvasKit = await CanvasKitInit()
+  const skSurface = canvasKit.MakeCanvasSurface(canvas)
+  const context: ContainerContext = { canvasKit, skInstance: skSurface }
+  const container = canvaskitReconciler.createContainer(context, isConcurrent, hydrate)
+
+  // Since there is no parent (since this is the root fiber). We set parentComponent to null.
+  const parentComponent = null
+  // Start reconcilation and render the result
+  canvaskitReconciler.updateContainer(
+    element,
+    container,
+    parentComponent,
+    callback
+  )
+
+  // TODO provide support for dev tools
+  // reactCanvaskitReconciler.injectIntoDevTools({
+  //   bundleType: 1, // 0 for PROD, 1 for DEV
+  //   version: '0.0.1', // version for your renderer
+  //   rendererPackageName: 'react-canvaskit', // package name
+  //   // @ts-ignore
+  //   findHostInstanceByFiber: reactCanvaskitReconciler.findHostInstance // host instance (root)
+  // })
+}
