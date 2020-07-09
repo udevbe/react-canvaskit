@@ -19,19 +19,20 @@ export class CkInstance<Type extends string, P extends Props, SkInstance> {
   }
 }
 
-export interface ckInstanceCreator<T extends string, P extends Props, SkInstance, ParentContext extends CkParentContext<any>> {
+interface CkInstanceCreator<T extends string, P extends Props, SkInstance, ParentContext extends CkParentContext<any>> {
   (props: Partial<P>, parentContext: ParentContext): CkInstance<T, Partial<P>, SkInstance>
 }
 
 export interface CkCanvasProps {
   clear: Color
+  children: string
 }
 
 function toSkColor (context: CkParentContext<any>, color: Color) {
-  return context.canvasKit.Color(color.fRed, color.fGreen, color.fBlue, color.fAlpha)
+  return context.canvasKit.Color(color.red, color.green, color.blue, color.fAlpha ?? 1)
 }
 
-const ckCanvasCreator: ckInstanceCreator<'ck-canvas', CkCanvasProps, SkCanvas, CkParentContext<SkSurface>> = (props, parentContext) => {
+const ckCanvasCreator: CkInstanceCreator<'ck-canvas', CkCanvasProps, SkCanvas, CkParentContext<SkSurface>> = (props, parentContext) => {
   const skCanvas = parentContext.skInstance.getCanvas()
   if (props.clear) {
     skCanvas.clear(toSkColor(parentContext, props.clear))
@@ -40,26 +41,26 @@ const ckCanvasCreator: ckInstanceCreator<'ck-canvas', CkCanvasProps, SkCanvas, C
 }
 
 export interface Color {
-  fRed: number,
-  fGreen: number,
-  fBlue: number,
-  fAlpha: number
+  red: number,
+  green: number,
+  blue: number,
+  fAlpha?: number
 }
 
 export enum FilterQuality {
-
+  // TODO
 }
 
 export enum StrokeCap {
-
+ // TODO
 }
 
 export enum StrokeJoin {
-
+ // TODO
 }
 
 export enum BlendMode {
-
+ // TODO
 }
 
 export type ColorFilter =
@@ -97,7 +98,7 @@ export type SRGBToLinearGammaColorFilter = 'SRGBToLinearGamma'
 export type ImageFilter = BlurImageFilter | ColorImageFilter | ComposeImageFilter | MatrixTransformImageFilter
 
 export enum TileMode {
-
+  // TODO
 }
 
 export interface BlurImageFilter {
@@ -118,7 +119,7 @@ export interface ComposeImageFilter {
 }
 
 export enum FilterQuality {
-
+  // TODO
 }
 
 export interface MatrixTransformImageFilter {
@@ -130,7 +131,7 @@ export interface MatrixTransformImageFilter {
 export type MaskFilter = BlurMaskFilter
 
 export enum BlurStyle {
-
+  // TODO
 }
 
 export interface BlurMaskFilter {
@@ -195,7 +196,7 @@ export interface TwoPointConicalGradientShader {
 }
 
 export enum PaintStyle {
-
+  // TODO
 }
 
 export interface Paint {
@@ -224,23 +225,23 @@ export interface LineProps {
 }
 
 export enum TextAlignEnum {
-
+  // TODO
 }
 
 export enum TextDirectionEnum {
-
+  // TODO
 }
 
 export enum FontWeightEnum {
-
+  // TODO
 }
 
 export enum FontSlantEnum {
-
+  // TODO
 }
 
 export enum FontWidthEnum {
-
+  // TODO
 }
 
 export interface FontStyleProps {
@@ -276,27 +277,22 @@ export interface ParagraphProps {
   y: number
 }
 
-const COMPONENTS: { [key: string]: CkTypeConstructor | undefined } = {
-  'sk-canvas': ckCanvasCreator,
-  'sk-line': ckLineCreator,
-  'sk-paragraph': ckParagraphCreator
+const SkElements: { [key: string]: CkInstanceCreator<string, Props, any, CkParentContext<any>> } = {
+  'sk-canvas': ckCanvasCreator
+  // 'sk-line': ckLineCreator,
+  // 'sk-paragraph': ckParagraphCreator
 }
 
-export function createCkElement (type: string, props: Props, root: CkParentContext<any>): CkInstance<string, Props, any> {
-  const ctor = COMPONENTS[type]
-  if (ctor) {
-    return new ctor(props, root)
-  } else {
-    return undefined
-  }
+export function createCkElement (type: string, props: Props, parentContext: CkParentContext<any>): CkInstance<string, Props, any> {
+  return SkElements[type](props, parentContext)
 }
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
       'sk-canvas': Partial<CkCanvasProps>
-      'sk-line': Partial<LineProps>
-      'sk-paragraph': Partial<ParagraphProps>
+      // 'sk-line': Partial<LineProps>
+      // 'sk-paragraph': Partial<ParagraphProps>
     }
   }
 }

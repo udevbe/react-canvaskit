@@ -9,6 +9,10 @@ describe('canvaskit canvas', () => {
     const canvas = createCanvas(250, 250)
     // canvaskit uses the tagname to check if the element is a canvas
     canvas.tagName = 'CANVAS'
-    ReactCanvasKit.render(<sk-canvas/>, canvas)
+    ReactCanvasKit.render(
+      <sk-canvas clear={{ red: 1, green: 1, blue: 1 }}>
+        Hello React-CanvasKit!
+      </sk-canvas>, canvas
+    )
   })
 })
