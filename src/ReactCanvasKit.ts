@@ -2,24 +2,34 @@ import type { CanvasKit } from 'canvaskit-wasm'
 import * as CanvasKitInit from 'canvaskit-wasm'
 import type { HostConfig, ReactNodeList } from 'react-reconciler'
 import * as  ReactReconciler from 'react-reconciler'
-import { CkInstance, CkParentContext, createCkElement, Props } from './SkiaElementTypes'
-
-export type ContainerContext = CkParentContext<any>
+import { CkElement, CkElementType, createCkElement, Props } from './SkiaElementTypes'
 
 // @ts-ignore
-const hostConfig: HostConfig<string,// Type
+const canvasKitPromise = CanvasKitInit()
+
+type ContainerContext = {
+  ckElement: CkElement
+}
+
+// @ts-ignore
+
+const hostConfig: HostConfig<//
+  CkElementType,// Type
   Props, // Props
-  ContainerContext, // Container
-  CkInstance<string, Props, any>, // Instance
+  CkElement<any>, // Container
+  CkElement<any>, // Instance
   { text: string, containerContext: ContainerContext }, // TextInstance
   any, // HydratableInstance
   any, // PublicInstance
-  CanvasKit, // HostContext
+  ContainerContext, // HostContext
   any, // UpdatePayload
   any, // ChildSet
   any, // TimeoutHandle
   any // NoTimeout
-  > = {
+  > & { canvasKit: CanvasKit }
+  = {
+  // @ts-ignore lazily set when reconciler is created
+  canvasKit: undefined,
   /**
    * This function is used by the reconciler in order to calculate current time for prioritising work. In case of
    * react-dom, it uses performance.now if available or it falls back to Date.now Hence, lets just keep it as Date.now
@@ -29,12 +39,12 @@ const hostConfig: HostConfig<string,// Type
   supportsMutation: true,
 
   /**
-   * Here we will our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
+   * Here we will append our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
    *
    * @param container The root div or the container.
    * @param child The child dom node tree or the in-memory tree.
    */
-  appendChildToContainer (container: ContainerContext, child: CkInstance<string, Props, any>) {
+  appendChildToContainer (container, child) {
     console.log('TODO appendChildToContainer')
   },
   /**
@@ -44,9 +54,10 @@ const hostConfig: HostConfig<string,// Type
    * <div id="root"></div>
    * @return A context object that you wish to pass to immediate child.
    */
-  getRootHostContext (rootContainerInstance: ContainerContext): CanvasKit {
-    return rootContainerInstance.canvasKit
+  getRootHostContext (rootContainerInstance): ContainerContext {
+    return { ckElement: rootContainerInstance }
   },
+
   /**
    * This function provides a way to access context from the parent and also a way to pass some context to the immediate
    * children of the current node. Context is basically a regular object containing some information.
@@ -58,9 +69,10 @@ const hostConfig: HostConfig<string,// Type
    * most commonly <div id="root"></div>
    * @return A context object that you wish to pass to immediate child.
    */
-  getChildHostContext (parentHostContext: CanvasKit, type: any, rootContainerInstance: ContainerContext): CanvasKit {
+  getChildHostContext (parentHostContext, type, rootContainerInstance): ContainerContext {
     return parentHostContext
   },
+
   /**
    * If the function returns true, the text would be created inside the host element and no new text element would be
    * created separately.
@@ -76,9 +88,10 @@ const hostConfig: HostConfig<string,// Type
    * @param props Contains the props passed to the host react element.
    * @return This should be a boolean value.
    */
-  shouldSetTextContent (type: string, props: Props): boolean {
+  shouldSetTextContent (type, props): boolean {
     return false
   },
+
   /**
    * Here we specify how should renderer handle the text content
    *
@@ -90,13 +103,10 @@ const hostConfig: HostConfig<string,// Type
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
-  createTextInstance (
-    text: string,
-    rootContainerInstance: ContainerContext,
-    hostContext: CanvasKit,
-    internalInstanceHandle: ReactReconciler.OpaqueHandle): { text: string, containerContext: ContainerContext } {
-    return { text, containerContext: rootContainerInstance }
+  createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
+    return { text, containerContext: hostContext }
   },
+
   /**
    * Create instance is called on all host nodes except the leaf text nodes. So we should return the correct view
    * element for each host type here. We are also supposed to take care of the props sent to the host element. For
@@ -109,13 +119,14 @@ const hostConfig: HostConfig<string,// Type
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    */
   createInstance (
-    type: string,
-    props: Props,
-    rootContainerInstance: ContainerContext,
-    hostContext: CanvasKit,
-    internalInstanceHandle: ReactReconciler.OpaqueHandle): CkInstance<string, Props, any> {
-    return createCkElement(type, props, rootContainerInstance)
+    type,
+    props,
+    rootContainerInstance,
+    hostContext,
+    internalInstanceHandle) {
+    return createCkElement(this.canvasKit, type, props, hostContext.ckElement)
   },
+
   /**
    * Here we will attach the child dom node to the parent on the initial render phase. This method will be called for
    * each child of the current node.
@@ -123,9 +134,10 @@ const hostConfig: HostConfig<string,// Type
    * @param parentInstance The current node in the traversal
    * @param child The child dom node of the current node.
    */
-  appendInitialChild (parentInstance: CkInstance<string, Props, any>, child: CkInstance<string, Props, any>) {
+  appendInitialChild (parentInstance, child) {
     console.log('TODO appendInitialChild')
   },
+
   /**
    * In case of react native renderer, this function does nothing but return false.
    *
@@ -142,12 +154,7 @@ const hostConfig: HostConfig<string,// Type
    * @param rootContainerInstance root dom node you specify while calling render. This is most commonly <div id="root"></div>
    * @param hostContext contains the context from the parent node enclosing this node. This is the return value from getChildHostContext of the parent node.
    */
-  finalizeInitialChildren (
-    parentInstance: CkInstance<string, Props, any>,
-    type: string,
-    props: Props,
-    rootContainerInstance: ContainerContext,
-    hostContext: CanvasKit): boolean {
+  finalizeInitialChildren (parentInstance, type, props, rootContainerInstance, hostContext) {
     return false
   },
   /**
@@ -158,7 +165,7 @@ const hostConfig: HostConfig<string,// Type
    *
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
-  prepareForCommit (containerInfo: ContainerContext) {
+  prepareForCommit (containerInfo) {
     console.log('TODO prepareForCommit')
   },
   /**
@@ -168,25 +175,29 @@ const hostConfig: HostConfig<string,// Type
    *
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
-  resetAfterCommit (containerInfo: ContainerContext) {
+  resetAfterCommit (containerInfo) {
     console.log('TODO resetAfterCommit')
   }
 }
 
 const canvaskitReconciler = ReactReconciler(hostConfig)
 
-
 export async function render (element: ReactNodeList, canvas: HTMLCanvasElement, callback = () => {
 }) {
   const isConcurrent = false
   const hydrate = false
 
-  // Creates root fiber node.
-  // @ts-ignore
-  const canvasKit = await CanvasKitInit()
+  const canvasKit = await canvasKitPromise
+  hostConfig.canvasKit = canvasKit
   const skSurface = canvasKit.MakeCanvasSurface(canvas)
-  const context: ContainerContext = { canvasKit, skInstance: skSurface }
-  const container = canvaskitReconciler.createContainer(context, isConcurrent, hydrate)
+  // @ts-ignore our root object doesn't can't have a parent
+  const ckSurfaceElement: CkElement<'ck-surface'> = {
+    type: 'ck-surface',
+    props: { width: canvas.width, height: canvas.height },
+    skObjectTyp: 'SkSurface',
+    skObject: skSurface
+  }
+  const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)
 
   // Since there is no parent (since this is the root fiber). We set parentComponent to null.
   const parentComponent = null
@@ -199,11 +210,11 @@ export async function render (element: ReactNodeList, canvas: HTMLCanvasElement,
   )
 
   // TODO provide support for dev tools
-  // reactCanvaskitReconciler.injectIntoDevTools({
-  //   bundleType: 1, // 0 for PROD, 1 for DEV
-  //   version: '0.0.1', // version for your renderer
-  //   rendererPackageName: 'react-canvaskit', // package name
-  //   // @ts-ignore
-  //   findHostInstanceByFiber: reactCanvaskitReconciler.findHostInstance // host instance (root)
-  // })
+  canvaskitReconciler.injectIntoDevTools({
+    bundleType: 1, // 0 for PROD, 1 for DEV
+    version: '0.0.1', // version for your renderer
+    rendererPackageName: 'react-canvaskit', // package name
+    // @ts-ignore
+    findHostInstanceByFiber: reactCanvaskitReconciler.findHostInstance // host instance (root)
+  })
 }

@@ -1,26 +1,25 @@
-import type { CanvasKit, SkCanvas, SkSurface } from 'canvaskit-wasm'
+import type { CanvasKit, SkCanvas, SkObject, SkSurface } from 'canvaskit-wasm'
 
 export type Props = { [key: string]: any }
 
-export interface CkParentContext<T> {
-  canvasKit: CanvasKit,
-  skInstance: T
+interface CkObjectTyping {
+  'ck-object': { type: SkObject<any>, name: 'SkObject', props: Props }
+  'ck-surface': { type: SkSurface, name: 'SkSurface', props: CkSurfaceProps }
+  'ck-canvas': { type: SkCanvas, name: 'SkCanvas', props: CkCanvasProps }
+  'ck-line': { type: SkSurface, name: 'SkSurface', props: Props }
 }
 
-export class CkInstance<Type extends string, P extends Props, SkInstance> {
-  readonly type: Type
-  readonly skInstance: SkInstance
-  readonly props: P
+export type CkElementType = keyof CkObjectTyping
 
-  constructor (type: Type, props: P, skInstance: SkInstance) {
-    this.type = type
-    this.props = props
-    this.skInstance = skInstance
-  }
+export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> {
+  readonly type: CkElementType
+  readonly props: CkObjectTyping[TypeName]['props']
+  readonly skObjectTyp: CkObjectTyping[TypeName]['name']
+  readonly skObject: CkObjectTyping[TypeName]['type']
 }
 
-interface CkInstanceCreator<T extends string, P extends Props, SkInstance, ParentContext extends CkParentContext<any>> {
-  (props: Partial<P>, parentContext: ParentContext): CkInstance<T, Partial<P>, SkInstance>
+interface CkElementInstanceCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
+  (canvasKit: CanvasKit, type: TypeName, props: CkObjectTyping[TypeName]['props'], parent: CkElement<ParentTypeName>): CkElement<TypeName>
 }
 
 export interface CkCanvasProps {
@@ -28,23 +27,44 @@ export interface CkCanvasProps {
   children: string
 }
 
-function toSkColor (context: CkParentContext<any>, color: Color) {
-  return context.canvasKit.Color(color.red, color.green, color.blue, color.fAlpha ?? 1)
+function toSkColor (canvasKit: CanvasKit, color: Color) {
+  return canvasKit.Color(color.red, color.green, color.blue, color.alpha ?? 1)
 }
 
-const ckCanvasCreator: CkInstanceCreator<'ck-canvas', CkCanvasProps, SkCanvas, CkParentContext<SkSurface>> = (props, parentContext) => {
-  const skCanvas = parentContext.skInstance.getCanvas()
+const ckCanvasCreator: CkElementInstanceCreator<'ck-canvas', 'ck-surface'> = (canvasKit, type, props, parent) => {
+  const skCanvas = parent.skObject.getCanvas()
   if (props.clear) {
-    skCanvas.clear(toSkColor(parentContext, props.clear))
+    skCanvas.clear(toSkColor(canvasKit, props.clear))
   }
-  return new CkInstance('ck-canvas', props, skCanvas)
+  return {
+    type: 'ck-canvas',
+    props,
+    skObjectTyp: 'SkCanvas',
+    skObject: skCanvas
+  }
+}
+
+export interface CkSurfaceProps {
+  width: number
+  height: number
+}
+
+const ckSurfaceCreator: CkElementInstanceCreator<'ck-surface', 'ck-canvas'> = (canvasKit, type, props, parent) => {
+  const skSurface = canvasKit.MakeSurface(props.width, props.height)
+  // TODO paint surface to canvas?
+  return {
+    type: 'ck-surface',
+    props,
+    skObjectTyp: 'SkSurface',
+    skObject: skSurface
+  }
 }
 
 export interface Color {
   red: number,
   green: number,
   blue: number,
-  fAlpha?: number
+  alpha?: number
 }
 
 export enum FilterQuality {
@@ -52,15 +72,15 @@ export enum FilterQuality {
 }
 
 export enum StrokeCap {
- // TODO
+  // TODO
 }
 
 export enum StrokeJoin {
- // TODO
+  // TODO
 }
 
 export enum BlendMode {
- // TODO
+  // TODO
 }
 
 export type ColorFilter =
@@ -277,20 +297,23 @@ export interface ParagraphProps {
   y: number
 }
 
-const SkElements: { [key: string]: CkInstanceCreator<string, Props, any, CkParentContext<any>> } = {
-  'sk-canvas': ckCanvasCreator
-  // 'sk-line': ckLineCreator,
-  // 'sk-paragraph': ckParagraphCreator
+const CkElements: { [key in CkElementType]: CkElementInstanceCreator<any, any> } = {// @ts-ignore
+  // @ts-ignore TODO
+  'ck-line': undefined,
+  // @ts-ignore TODO
+  'ck-object': undefined,
+  'ck-surface': ckSurfaceCreator,
+  'ck-canvas': ckCanvasCreator
 }
 
-export function createCkElement (type: string, props: Props, parentContext: CkParentContext<any>): CkInstance<string, Props, any> {
-  return SkElements[type](props, parentContext)
+export function createCkElement (canvasKit: CanvasKit, type: CkElementType, props: Props, parent: CkElement<any>): CkElement {
+  return CkElements[type](canvasKit, type, props, parent)
 }
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      'sk-canvas': Partial<CkCanvasProps>
+      'ck-canvas': Partial<CkCanvasProps>
       // 'sk-line': Partial<LineProps>
       // 'sk-paragraph': Partial<ParagraphProps>
     }
