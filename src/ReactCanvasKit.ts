@@ -18,9 +18,9 @@ const hostConfig: HostConfig<//
   Props, // Props
   CkElement<any>, // Container
   CkElement<any>, // Instance
-  { text: string, containerContext: ContainerContext }, // TextInstance
+  { text: string, hostContext: CkElement<any> }, // TextInstance
   any, // HydratableInstance
-  any, // PublicInstance
+  CkElement<any> | { text: string; hostContext: CkElement<any> }, // PublicInstance
   ContainerContext, // HostContext
   any, // UpdatePayload
   any, // ChildSet
@@ -31,12 +31,12 @@ const hostConfig: HostConfig<//
   // @ts-ignore lazily set when reconciler is created
   canvasKit: undefined,
   /**
-   * This function is used by the reconciler in order to calculate current time for prioritising work. In case of
-   * react-dom, it uses performance.now if available or it falls back to Date.now Hence, lets just keep it as Date.now
-   * for our custom renderer.
+   * This function is used by the reconciler in order to calculate current time for prioritising work.
    */
   now: Date.now,
   supportsMutation: true,
+  supportsPersistence: false,
+  supportsHydration: false,
 
   /**
    * Here we will append our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
@@ -104,7 +104,7 @@ const hostConfig: HostConfig<//
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
   createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
-    return { text, containerContext: hostContext }
+    return { text, hostContext: hostContext.ckElement }
   },
 
   /**
@@ -124,7 +124,7 @@ const hostConfig: HostConfig<//
     rootContainerInstance,
     hostContext,
     internalInstanceHandle) {
-    return createCkElement(this.canvasKit, type, props, hostContext.ckElement)
+    return createCkElement(type, props, hostContext.ckElement)
   },
 
   /**
@@ -177,24 +177,32 @@ const hostConfig: HostConfig<//
    */
   resetAfterCommit (containerInfo) {
     console.log('TODO resetAfterCommit')
+  },
+
+  getPublicInstance (instance: CkElement<any> | { text: string; hostContext: CkElement<any> }): CkElement<any> | { text: string; hostContext: CkElement<any> } {
+    return instance
   }
 }
 
 const canvaskitReconciler = ReactReconciler(hostConfig)
+canvaskitReconciler.injectIntoDevTools({
+  bundleType: 1, // 0 for PROD, 1 for DEV
+  version: '0.0.1', // version for your renderer
+  rendererPackageName: 'react-canvaskit' // package name
+})
 
-export async function render (element: ReactNodeList, canvas: HTMLCanvasElement, callback = () => {
-}) {
+export async function render (element: ReactNodeList, canvas: HTMLCanvasElement) {
   const isConcurrent = false
   const hydrate = false
 
   const canvasKit = await canvasKitPromise
-  hostConfig.canvasKit = canvasKit
   const skSurface = canvasKit.MakeCanvasSurface(canvas)
   // @ts-ignore our root object doesn't can't have a parent
   const ckSurfaceElement: CkElement<'ck-surface'> = {
+    canvasKit,
     type: 'ck-surface',
     props: { width: canvas.width, height: canvas.height },
-    skObjectTyp: 'SkSurface',
+    skObjectType: 'SkSurface',
     skObject: skSurface
   }
   const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)
@@ -206,15 +214,7 @@ export async function render (element: ReactNodeList, canvas: HTMLCanvasElement,
     element,
     container,
     parentComponent,
-    callback
+    () => {
+    }
   )
-
-  // TODO provide support for dev tools
-  canvaskitReconciler.injectIntoDevTools({
-    bundleType: 1, // 0 for PROD, 1 for DEV
-    version: '0.0.1', // version for your renderer
-    rendererPackageName: 'react-canvaskit', // package name
-    // @ts-ignore
-    findHostInstanceByFiber: reactCanvaskitReconciler.findHostInstance // host instance (root)
-  })
 }
