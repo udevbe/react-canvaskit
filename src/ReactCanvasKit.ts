@@ -18,12 +18,12 @@ const hostConfig: HostConfig<//
   Props, // Props
   CkElement<any>, // Container
   CkElement<any>, // Instance
-  { text: string, hostContext: CkElement<any> }, // TextInstance
+  string, // TextInstance
   any, // HydratableInstance
-  CkElement<any> | { text: string; hostContext: CkElement<any> }, // PublicInstance
+  CkElement<any> | string, // PublicInstance
   ContainerContext, // HostContext
   any, // UpdatePayload
-  any, // ChildSet
+  (CkElement<any> | string)[], // ChildSet
   any, // TimeoutHandle
   any // NoTimeout
   > & { canvasKit: CanvasKit }
@@ -34,18 +34,39 @@ const hostConfig: HostConfig<//
    * This function is used by the reconciler in order to calculate current time for prioritising work.
    */
   now: Date.now,
-  supportsMutation: true,
-  supportsPersistence: false,
+  supportsMutation: false,
+  supportsPersistence: true,
   supportsHydration: false,
 
+  // /**
+  //  * Here we will append our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
+  //  *
+  //  * @param container The root div or the container.
+  //  * @param child The child dom node tree or the in-memory tree.
+  //  */
+  // appendChildToContainer (container, child) {
+  //   console.log('TODO appendChildToContainer')
+  // },
+
+  createContainerChildSet (container: CkElement<any>): (CkElement<any> | string)[] {
+    // TODO return a set of the children currently attached to this container
+    return []
+  },
   /**
-   * Here we will append our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
-   *
-   * @param container The root div or the container.
-   * @param child The child dom node tree or the in-memory tree.
+   * Attaches new children to the set returned by createContainerChildSet
+   * @param childSet
+   * @param child
    */
-  appendChildToContainer (container, child) {
-    console.log('TODO appendChildToContainer')
+  appendChildToContainerChildSet (
+    childSet: (CkElement<any> | string)[],
+    child: CkElement<any> | string) {
+    childSet.push(child)
+  },
+  replaceContainerChildren (
+    container: CkElement<any>,
+    newChildren: (CkElement<any> | string)[]) {
+    // TODO do actual render
+    console.log('TODO replaceContainerChildren')
   },
   /**
    * This function lets you share some context with the other functions in this HostConfig.
@@ -104,7 +125,7 @@ const hostConfig: HostConfig<//
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
   createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
-    return { text, hostContext: hostContext.ckElement }
+    return text
   },
 
   /**
@@ -135,9 +156,10 @@ const hostConfig: HostConfig<//
    * @param child The child dom node of the current node.
    */
   appendInitialChild (parentInstance, child) {
+    // attach children to parent on first render
     console.log('TODO appendInitialChild')
   },
-
+//
   /**
    * In case of react native renderer, this function does nothing but return false.
    *
@@ -155,6 +177,9 @@ const hostConfig: HostConfig<//
    * @param hostContext contains the context from the parent node enclosing this node. This is the return value from getChildHostContext of the parent node.
    */
   finalizeInitialChildren (parentInstance, type, props, rootContainerInstance, hostContext) {
+    return false
+  },
+  finalizeContainerChildren (container: CkElement<any>, newChildren: (CkElement<any> | string)[]) {
     return false
   },
   /**
@@ -179,7 +204,7 @@ const hostConfig: HostConfig<//
     console.log('TODO resetAfterCommit')
   },
 
-  getPublicInstance (instance: CkElement<any> | { text: string; hostContext: CkElement<any> }): CkElement<any> | { text: string; hostContext: CkElement<any> } {
+  getPublicInstance (instance: CkElement<any> | string): CkElement<any> | string {
     return instance
   }
 }

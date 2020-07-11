@@ -1,4 +1,5 @@
 import type { CanvasKit, SkCanvas, SkObject, SkSurface } from 'canvaskit-wasm'
+import { ReactElement, ReactNode } from 'react'
 
 export type Props = { [key: string]: any }
 
@@ -19,6 +20,10 @@ export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> 
   readonly skObject: CkObjectTyping[TypeName]['type']
 }
 
+export interface CkElementContainer<TypeName extends keyof CkObjectTyping = 'ck-object'> extends CkElement<TypeName> {
+  children: CkElement<any>[]
+}
+
 interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
   (type: TypeName, props: CkObjectTyping[TypeName]['props'], parent: CkElement<ParentTypeName>): CkElement<TypeName>
 }
@@ -26,6 +31,7 @@ interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName
 export interface CkSurfaceProps {
   width: number
   height: number
+  children?: ReactElement<CkCanvasProps> | ReactElement<CkCanvasProps>[]
 }
 
 class CkSurface implements CkElement<'ck-surface'> {
@@ -55,7 +61,7 @@ class CkSurface implements CkElement<'ck-surface'> {
 
 export interface CkCanvasProps {
   clear?: Color
-  children?: string
+  children?: ReactNode
 }
 
 class CkCanvas implements CkElement<'ck-canvas'> {

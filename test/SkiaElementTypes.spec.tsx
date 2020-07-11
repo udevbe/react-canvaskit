@@ -11,6 +11,9 @@ describe('canvaskit canvas', () => {
     await ReactCanvasKit.render(
       <ck-canvas clear={{ red: 1, green: 1, blue: 1 }}>
         Hello React-CanvasKit!
+        <ck-surface width={100} height={100}>
+          <ck-canvas clear={{ red: 0.5, green: 0.5, blue: 0.5 }}/>
+        </ck-surface>
       </ck-canvas>,
       canvas
     )
