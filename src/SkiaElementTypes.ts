@@ -20,8 +20,12 @@ export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> 
   readonly skObject: CkObjectTyping[TypeName]['type']
 }
 
+export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
+  return (ckElement as CkElementContainer).children !== undefined
+}
+
 export interface CkElementContainer<TypeName extends keyof CkObjectTyping = 'ck-object'> extends CkElement<TypeName> {
-  children: CkElement<any>[]
+  children: (CkElement<any> | string)[]
 }
 
 interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
@@ -34,7 +38,7 @@ export interface CkSurfaceProps {
   children?: ReactElement<CkCanvasProps> | ReactElement<CkCanvasProps>[]
 }
 
-class CkSurface implements CkElement<'ck-surface'> {
+class CkSurface implements CkElementContainer<'ck-surface'> {
   static create: CkElementCreator<'ck-surface', 'ck-canvas'> = (type, props, parent) => {
     const skSurface = parent.canvasKit.MakeSurface(props.width, props.height)
     return new CkSurface(parent.canvasKit, props, skSurface)
@@ -43,8 +47,9 @@ class CkSurface implements CkElement<'ck-surface'> {
   readonly canvasKit: CanvasKit
   readonly props: CkObjectTyping['ck-surface']['props']
   readonly skObject: CkObjectTyping['ck-surface']['type']
-  readonly skObjectType: CkObjectTyping['ck-surface']['name']
-  readonly type: 'ck-surface'
+  readonly skObjectType: CkObjectTyping['ck-surface']['name'] = 'SkSurface'
+  readonly type: 'ck-surface' = 'ck-surface'
+  children: CkElement<any>[] = []
 
   constructor (
     canvasKit: CanvasKit,
@@ -54,8 +59,6 @@ class CkSurface implements CkElement<'ck-surface'> {
     this.canvasKit = canvasKit
     this.props = props
     this.skObject = skObject
-    this.skObjectType = 'SkSurface'
-    this.type = 'ck-surface'
   }
 }
 
@@ -64,7 +67,7 @@ export interface CkCanvasProps {
   children?: ReactNode
 }
 
-class CkCanvas implements CkElement<'ck-canvas'> {
+class CkCanvas implements CkElementContainer<'ck-canvas'> {
   static create: CkElementCreator<'ck-canvas', 'ck-surface'> = (type, props, parent) => {
     const skCanvas = parent.skObject.getCanvas()
     if (props.clear) {
@@ -77,8 +80,9 @@ class CkCanvas implements CkElement<'ck-canvas'> {
   readonly canvasKit: CanvasKit
   readonly props: CkObjectTyping['ck-canvas']['props']
   readonly skObject: CkObjectTyping['ck-canvas']['type']
-  readonly skObjectType: CkObjectTyping['ck-canvas']['name']
-  readonly type: 'ck-canvas'
+  readonly skObjectType: CkObjectTyping['ck-canvas']['name'] = 'SkCanvas'
+  readonly type: 'ck-canvas' = 'ck-canvas'
+  children: CkElement<any>[] = []
 
   constructor (
     canvasKit: CanvasKit,
@@ -88,8 +92,6 @@ class CkCanvas implements CkElement<'ck-canvas'> {
     this.canvasKit = canvasKit
     this.props = props
     this.skObject = skObject
-    this.skObjectType = 'SkCanvas'
-    this.type = 'ck-canvas'
   }
 }
 

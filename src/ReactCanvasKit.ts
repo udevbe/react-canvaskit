@@ -1,8 +1,15 @@
-import type { CanvasKit } from 'canvaskit-wasm'
+import type { CanvasKit, SkSurface } from 'canvaskit-wasm'
 import * as CanvasKitInit from 'canvaskit-wasm'
 import type { HostConfig, ReactNodeList } from 'react-reconciler'
 import * as  ReactReconciler from 'react-reconciler'
-import { CkElement, CkElementType, createCkElement, Props } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementType,
+  createCkElement,
+  isContainerElement,
+  Props
+} from './SkiaElementTypes'
 
 // @ts-ignore
 const canvasKitPromise = CanvasKitInit()
@@ -16,7 +23,7 @@ type ContainerContext = {
 const hostConfig: HostConfig<//
   CkElementType,// Type
   Props, // Props
-  CkElement<any>, // Container
+  CkElementContainer<any>, // Container
   CkElement<any>, // Instance
   string, // TextInstance
   any, // HydratableInstance
@@ -38,35 +45,20 @@ const hostConfig: HostConfig<//
   supportsPersistence: true,
   supportsHydration: false,
 
-  // /**
-  //  * Here we will append our in-memory tree to the root host div. But this function only works if we set supportsMutation:true.
-  //  *
-  //  * @param container The root div or the container.
-  //  * @param child The child dom node tree or the in-memory tree.
-  //  */
-  // appendChildToContainer (container, child) {
-  //   console.log('TODO appendChildToContainer')
-  // },
-
-  createContainerChildSet (container: CkElement<any>): (CkElement<any> | string)[] {
-    // TODO return a set of the children currently attached to this container
-    return []
+  createContainerChildSet (container) {
+    return [...container.children]
   },
   /**
    * Attaches new children to the set returned by createContainerChildSet
    * @param childSet
    * @param child
    */
-  appendChildToContainerChildSet (
-    childSet: (CkElement<any> | string)[],
-    child: CkElement<any> | string) {
+  appendChildToContainerChildSet (childSet, child) {
     childSet.push(child)
   },
-  replaceContainerChildren (
-    container: CkElement<any>,
-    newChildren: (CkElement<any> | string)[]) {
-    // TODO do actual render
-    console.log('TODO replaceContainerChildren')
+  replaceContainerChildren (container, newChildren) {
+    container.children = newChildren
+    // TODO do recursive render calls of all children in tree?
   },
   /**
    * This function lets you share some context with the other functions in this HostConfig.
@@ -156,10 +148,13 @@ const hostConfig: HostConfig<//
    * @param child The child dom node of the current node.
    */
   appendInitialChild (parentInstance, child) {
-    // attach children to parent on first render
-    console.log('TODO appendInitialChild')
+    if (isContainerElement(parentInstance)) {
+      parentInstance.children.push(child)
+    } else {
+      throw new Error('Bug? Trying to append a child to a parent that is not a container.')
+    }
   },
-//
+
   /**
    * In case of react native renderer, this function does nothing but return false.
    *
@@ -191,7 +186,7 @@ const hostConfig: HostConfig<//
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   prepareForCommit (containerInfo) {
-    console.log('TODO prepareForCommit')
+    // noop?
   },
   /**
    * This function gets executed after the inmemory tree has been attached to the root dom element. Here we can do any
@@ -201,7 +196,7 @@ const hostConfig: HostConfig<//
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   resetAfterCommit (containerInfo) {
-    console.log('TODO resetAfterCommit')
+    (<SkSurface>containerInfo.skObject).flush()
   },
 
   getPublicInstance (instance: CkElement<any> | string): CkElement<any> | string {
@@ -223,12 +218,13 @@ export async function render (element: ReactNodeList, canvas: HTMLCanvasElement)
   const canvasKit = await canvasKitPromise
   const skSurface = canvasKit.MakeCanvasSurface(canvas)
   // @ts-ignore our root object doesn't can't have a parent
-  const ckSurfaceElement: CkElement<'ck-surface'> = {
+  const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
     props: { width: canvas.width, height: canvas.height },
     skObjectType: 'SkSurface',
-    skObject: skSurface
+    skObject: skSurface,
+    children: []
   }
   const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)
 

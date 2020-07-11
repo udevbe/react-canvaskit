@@ -1,4 +1,6 @@
 // @ts-ignore
+import { writeFileSync } from 'fs'
+// @ts-ignore
 import { createCanvas } from 'node-canvas-webgl'
 import * as React from 'react'
 import * as ReactCanvasKit from '../src'
@@ -9,15 +11,15 @@ describe('canvaskit canvas', () => {
     // canvaskit uses the tagname to check if the element is a canvas
     canvas.tagName = 'CANVAS'
     await ReactCanvasKit.render(
-      <ck-canvas clear={{ red: 1, green: 1, blue: 1 }}>
+      <ck-canvas clear={{ red: 255, green: 255, blue: 255 }}>
         Hello React-CanvasKit!
         <ck-surface width={100} height={100}>
-          <ck-canvas clear={{ red: 0.5, green: 0.5, blue: 0.5 }}/>
+          <ck-canvas clear={{ red: 100, green: 100, blue: 100 }}/>
         </ck-surface>
       </ck-canvas>,
-      canvas
-    )
-    // TODO check the visual output somehow
+      canvas)
+    // TODO assert the visual output istead of writing it to a file
+    writeFileSync('./snap.png', canvas.toBuffer())
     // done()
   })
 })
