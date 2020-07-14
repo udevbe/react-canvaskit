@@ -20,7 +20,7 @@ export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> 
   readonly skObjectType: CkObjectTyping[TypeName]['name']
   readonly skObject: CkObjectTyping[TypeName]['type']
 
-  render (parent: CkElementContainer<any>): void
+  render (parent?: CkElementContainer<any>): void
 }
 
 export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {

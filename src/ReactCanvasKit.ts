@@ -58,7 +58,7 @@ const hostConfig: HostConfig<//
   },
   replaceContainerChildren (container, newChildren) {
     container.children = newChildren
-    // TODO do recursive render calls of all children in tree?
+    container.render()
   },
   /**
    * This function lets you share some context with the other functions in this HostConfig.
@@ -211,31 +211,44 @@ canvaskitReconciler.injectIntoDevTools({
   rendererPackageName: 'react-canvaskit' // package name
 })
 
-export async function render (element: ReactNodeList, canvas: HTMLCanvasElement) {
+export async function render (element: ReactNodeList, glRenderingContext: WebGLRenderingContext, width: number, height: number) {
   const isConcurrent = false
   const hydrate = false
 
   const canvasKit = await canvasKitPromise
-  const skSurface = canvasKit.MakeCanvasSurface(canvas)
+  const context = canvasKit.GetWebGLContext({getContext(){ return glRenderingContext}})
+  const grCtx = canvasKit.MakeGrContext(context)
+  const skSurface = canvasKit.MakeOnScreenGLSurface(grCtx, width, height, null)
   // @ts-ignore our root object doesn't can't have a parent
   const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
-    props: { width: canvas.width, height: canvas.height },
+    props: { width, height },
     skObjectType: 'SkSurface',
     skObject: skSurface,
-    children: []
+    children: [],
+    render () {
+      this.children.forEach(child => {
+        if (typeof child !== 'string') {
+          child.render(ckSurfaceElement)
+        }
+      })
+    }
   }
   const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)
 
   // Since there is no parent (since this is the root fiber). We set parentComponent to null.
   const parentComponent = null
   // Start reconcilation and render the result
-  canvaskitReconciler.updateContainer(
-    element,
-    container,
-    parentComponent,
-    () => {
-    }
-  )
+  return new Promise<void>(resolve => {
+    canvaskitReconciler.updateContainer(
+      element,
+      container,
+      parentComponent,
+      () => {
+        resolve()
+      }
+    )
+  })
+
 }

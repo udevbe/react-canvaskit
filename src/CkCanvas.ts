@@ -25,7 +25,7 @@ class CkCanvas implements CkElementContainer<'ck-canvas'> {
     this.skObject = skObject
   }
 
-  render (parent: CkElementContainer<'ck-surface'>): void {
+  render (): void {
     this.drawSelf()
     this.children.forEach(child => {
       if (typeof child === 'string') {
@@ -42,13 +42,19 @@ class CkCanvas implements CkElementContainer<'ck-canvas'> {
 
   private renderStringChild (child: string) {
     // TODO default paint & default font?
-    this.skObject.drawText(child, 0, 0, paint, font)
+    const font = new this.canvasKit.SkFont(null, 14)
+    const fontPaint = new this.canvasKit.SkPaint()
+    fontPaint.setStyle(this.canvasKit.PaintStyle.Fill)
+    fontPaint.setAntiAlias(true)
+
+    this.skObject.drawText(child, 10, 10, fontPaint, font)
   }
 
 }
 
 export const createCkCanvas: CkElementCreator<'ck-canvas', 'ck-surface'> = (type, props, parent): CkElementContainer<'ck-canvas'> => {
   const skCanvas = parent.skObject.getCanvas()
+  // TODO move clearing to render phase?
   if (props.clear) {
     skCanvas.clear(toSkColor(parent.canvasKit, props.clear))
   }
