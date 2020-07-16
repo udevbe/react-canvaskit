@@ -1,6 +1,7 @@
 import type { CanvasKit, SkCanvas, SkObject, SkSurface } from 'canvaskit-wasm'
 import { CkCanvasProps, createCkCanvas } from './CkCanvas'
 import { CkSurfaceProps, createCkSurface } from './CkSurface'
+import { CkTextProps, createCkText } from './CkText'
 
 export type Props = { [key: string]: any }
 
@@ -9,6 +10,7 @@ export interface CkObjectTyping {
   'ck-surface': { type: SkSurface, name: 'SkSurface', props: CkSurfaceProps }
   'ck-canvas': { type: SkCanvas, name: 'SkCanvas', props: CkCanvasProps }
   'ck-line': { type: SkSurface, name: 'SkSurface', props: Props }
+  'ck-text': { type: never, name: 'Text', props: CkTextProps }
 }
 
 export type CkElementType = keyof CkObjectTyping
@@ -23,6 +25,10 @@ export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> 
   render (parent?: CkElementContainer<any>): void
 }
 
+export interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
+  (type: TypeName, props: CkObjectTyping[TypeName]['props'], parent: CkElement<ParentTypeName>): CkElement<TypeName>
+}
+
 export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
   return (ckElement as CkElementContainer).children !== undefined
 }
@@ -31,12 +37,13 @@ export interface CkElementContainer<TypeName extends keyof CkObjectTyping = 'ck-
   children: (CkElement<any> | string)[]
 }
 
-export interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
-  (type: TypeName, props: CkObjectTyping[TypeName]['props'], parent: CkElement<ParentTypeName>): CkElement<TypeName>
-}
-
-export function toSkColor (canvasKit: CanvasKit, color: Color): number {
-  return canvasKit.Color(color.red, color.green, color.blue, color.alpha ?? 1)
+namespace CkPropTypes {
+  export const Color = {
+    red: 'number',
+    green: 'number',
+    blue: 'number',
+    alpha: 'number'
+  }
 }
 
 export interface Color {
@@ -45,6 +52,8 @@ export interface Color {
   blue: number,
   alpha?: number
 }
+
+export type ColorTypeName = 'Color'
 
 export enum FilterQuality {
   // TODO
@@ -199,20 +208,20 @@ export enum PaintStyle {
 }
 
 export interface Paint {
-  blendMode: BlendMode;
-  color: Color
-  filterQuality: FilterQuality;
-  strokeCap: StrokeCap;
-  strokeJoin: StrokeJoin;
-  strokeMiter: number;
-  strokeWidth: number;
-  antiAlias: boolean
-  colorFilter: ColorFilter
-  imageFilter: ImageFilter;
-  maskFilter: MaskFilter
-  pathEffect: PathEffect
-  shader: Shader
-  style: PaintStyle
+  blendMode?: BlendMode;
+  color?: Color
+  filterQuality?: FilterQuality;
+  strokeCap?: StrokeCap;
+  strokeJoin?: StrokeJoin;
+  strokeMiter?: number;
+  strokeWidth?: number;
+  antiAlias?: boolean
+  colorFilter?: ColorFilter
+  imageFilter?: ImageFilter;
+  maskFilter?: MaskFilter
+  pathEffect?: PathEffect
+  shader?: Shader
+  style?: PaintStyle
 }
 
 export interface LineProps {
@@ -236,50 +245,63 @@ export enum FontWeightEnum {
 }
 
 export enum FontSlantEnum {
-  // TODO
+  Upright,
+  Italic,
+  Oblique,
 }
 
 export enum FontWidthEnum {
   // TODO
 }
 
-export interface FontStyleProps {
-  weight: FontWeightEnum;
-  slant: FontSlantEnum;
-  width: FontWidthEnum;
+export interface TypeFace {
+  data: number[] | ArrayBuffer | Uint8Array
 }
 
-export interface TextStyleProps {
+export interface Font {
+  typeFace?: TypeFace,
+  size: number
+}
+
+export interface FontStyle {
+  weight?: FontWeightEnum;
+  slant?: FontSlantEnum;
+  width?: FontWidthEnum;
+}
+
+export interface TextStyle {
   backgroundColor: Color;
   color: Color;
   decoration: number;
   decorationThickness: number;
   fontFamilies: string[];
   fontSize: number;
-  fontStyle: FontStyleProps;
+  fontStyle: FontStyle;
   foregroundColor: Color;
 }
 
-export interface ParagraphStyleProps {
+export interface ParagraphStyle {
   disableHinting: boolean;
   heightMultiplier: number;
   maxLines: number;
   textAlign: TextAlignEnum;
   textDirection: TextDirectionEnum;
-  textStyle: TextStyleProps;
+  textStyle: TextStyle;
 }
 
 export interface ParagraphProps {
-  style: ParagraphStyleProps,
+  style: ParagraphStyle,
   maxWidth: number
   x: number,
   y: number
 }
 
+
 const CkElements: { [key in CkElementType]: CkElementCreator<any, any> } = {
-  // @ts-ignore TODO
+  'ck-text': createCkText,
+  // @ts-ignore
   'ck-line': undefined,
-  // @ts-ignore TODO
+  // @ts-ignore
   'ck-object': undefined,
   'ck-surface': createCkSurface,
   'ck-canvas': createCkCanvas
@@ -292,6 +314,7 @@ export function createCkElement (type: CkElementType, props: Props, parent: CkEl
 declare global {
   namespace JSX {
     interface IntrinsicElements {
+      'ck-text': CkTextProps
       'ck-canvas': CkCanvasProps
       'ck-surface': CkSurfaceProps
       // 'sk-line': Partial<LineProps>

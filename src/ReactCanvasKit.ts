@@ -18,14 +18,15 @@ type ContainerContext = {
   ckElement: CkElement
 }
 
-// @ts-ignore
 
+
+// @ts-ignore
 const hostConfig: HostConfig<//
   CkElementType,// Type
   Props, // Props
   CkElementContainer<any>, // Container
   CkElement<any>, // Instance
-  string, // TextInstance
+  CkElement<'ck-text'>, // TextInstance
   any, // HydratableInstance
   CkElement<any> | string, // PublicInstance
   ContainerContext, // HostContext
@@ -102,7 +103,7 @@ const hostConfig: HostConfig<//
    * @return This should be a boolean value.
    */
   shouldSetTextContent (type, props): boolean {
-    return false
+    return type === 'ck-text'
   },
 
   /**
@@ -116,9 +117,10 @@ const hostConfig: HostConfig<//
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
-  createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
-    return text
-  },
+  // @ts-ignore
+  // createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
+  //   return null
+  // },
 
   /**
    * Create instance is called on all host nodes except the leaf text nodes. So we should return the correct view
@@ -250,5 +252,4 @@ export async function render (element: ReactNodeList, glRenderingContext: WebGLR
       }
     )
   })
-
 }
