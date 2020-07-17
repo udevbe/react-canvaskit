@@ -20,13 +20,13 @@ export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> 
   readonly type: TypeName
   readonly props: CkObjectTyping[TypeName]['props']
   readonly skObjectType: CkObjectTyping[TypeName]['name']
-  readonly skObject: CkObjectTyping[TypeName]['type']
+  skObject?: CkObjectTyping[TypeName]['type']
 
-  render (parent?: CkElementContainer<any>): void
+  render (parent: CkElementContainer<any>): void
 }
 
-export interface CkElementCreator<TypeName extends keyof CkObjectTyping, ParentTypeName extends keyof CkObjectTyping> {
-  (type: TypeName, props: CkObjectTyping[TypeName]['props'], parent: CkElement<ParentTypeName>): CkElement<TypeName>
+export interface CkElementCreator<TypeName extends keyof CkObjectTyping> {
+  (type: TypeName, props: CkObjectTyping[TypeName]['props'], canvasKit: CanvasKit): CkElement<TypeName>
 }
 
 export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
@@ -34,7 +34,7 @@ export function isContainerElement (ckElement: CkElement<any>): ckElement is CkE
 }
 
 export interface CkElementContainer<TypeName extends keyof CkObjectTyping = 'ck-object'> extends CkElement<TypeName> {
-  children: (CkElement<any> | string)[]
+  children: CkElement<any>[]
 }
 
 namespace CkPropTypes {
@@ -296,8 +296,7 @@ export interface ParagraphProps {
   y: number
 }
 
-
-const CkElements: { [key in CkElementType]: CkElementCreator<any, any> } = {
+const CkElements: { [key in CkElementType]: CkElementCreator<any> } = {
   'ck-text': createCkText,
   // @ts-ignore
   'ck-line': undefined,
@@ -307,8 +306,8 @@ const CkElements: { [key in CkElementType]: CkElementCreator<any, any> } = {
   'ck-canvas': createCkCanvas
 }
 
-export function createCkElement (type: CkElementType, props: Props, parent: CkElement<any>): CkElement {
-  return CkElements[type](type, props, parent)
+export function createCkElement (type: CkElementType, props: Props, canvasKit: CanvasKit): CkElement {
+  return CkElements[type](type, props, canvasKit)
 }
 
 declare global {

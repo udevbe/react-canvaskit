@@ -19,7 +19,6 @@ type ContainerContext = {
 }
 
 
-
 // @ts-ignore
 const hostConfig: HostConfig<//
   CkElementType,// Type
@@ -28,10 +27,10 @@ const hostConfig: HostConfig<//
   CkElement<any>, // Instance
   CkElement<'ck-text'>, // TextInstance
   any, // HydratableInstance
-  CkElement<any> | string, // PublicInstance
+  CkElement<any>, // PublicInstance
   ContainerContext, // HostContext
   any, // UpdatePayload
-  (CkElement<any> | string)[], // ChildSet
+  CkElement<any>[], // ChildSet
   any, // TimeoutHandle
   any // NoTimeout
   > & { canvasKit: CanvasKit }
@@ -46,7 +45,7 @@ const hostConfig: HostConfig<//
   supportsPersistence: true,
   supportsHydration: false,
 
-  createContainerChildSet (container) {
+  createContainerChildSet (container: CkElementContainer<any>): CkElement<any>[] {
     return [...container.children]
   },
   /**
@@ -59,7 +58,6 @@ const hostConfig: HostConfig<//
   },
   replaceContainerChildren (container, newChildren) {
     container.children = newChildren
-    container.render()
   },
   /**
    * This function lets you share some context with the other functions in this HostConfig.
@@ -139,7 +137,7 @@ const hostConfig: HostConfig<//
     rootContainerInstance,
     hostContext,
     internalInstanceHandle) {
-    return createCkElement(type, props, hostContext.ckElement)
+    return createCkElement(type, props, hostContext.ckElement.canvasKit)
   },
 
   /**
@@ -176,8 +174,8 @@ const hostConfig: HostConfig<//
   finalizeInitialChildren (parentInstance, type, props, rootContainerInstance, hostContext) {
     return false
   },
-  finalizeContainerChildren (container: CkElement<any>, newChildren: (CkElement<any> | string)[]) {
-    return false
+  finalizeContainerChildren (container, newChildren) {
+    newChildren.forEach(newChild => newChild.render(container))
   },
   /**
    * This function is called when we have made a in-memory render tree of all the views (Remember we are yet to attach
@@ -201,7 +199,7 @@ const hostConfig: HostConfig<//
     (<SkSurface>containerInfo.skObject).flush()
   },
 
-  getPublicInstance (instance: CkElement<any> | string): CkElement<any> | string {
+  getPublicInstance (instance: CkElement<any>): CkElement<any> {
     return instance
   }
 }
@@ -218,7 +216,11 @@ export async function render (element: ReactNodeList, glRenderingContext: WebGLR
   const hydrate = false
 
   const canvasKit = await canvasKitPromise
-  const context = canvasKit.GetWebGLContext({getContext(){ return glRenderingContext}})
+  const context = canvasKit.GetWebGLContext({
+    getContext () {
+      return glRenderingContext
+    }
+  })
   const grCtx = canvasKit.MakeGrContext(context)
   const skSurface = canvasKit.MakeOnScreenGLSurface(grCtx, width, height, null)
   // @ts-ignore our root object doesn't can't have a parent
@@ -230,11 +232,7 @@ export async function render (element: ReactNodeList, glRenderingContext: WebGLR
     skObject: skSurface,
     children: [],
     render () {
-      this.children.forEach(child => {
-        if (typeof child !== 'string') {
-          child.render(ckSurfaceElement)
-        }
-      })
+      this.children.forEach(child => child.render(ckSurfaceElement))
     }
   }
   const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)

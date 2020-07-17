@@ -1,10 +1,12 @@
-import { CanvasKit, SkFont, SkPaint } from 'canvaskit-wasm'
+import { CanvasKit, SkCanvas, SkFont, SkPaint } from 'canvaskit-wasm'
 import { ReactNode } from 'react'
+import { isCkSurface } from './CkSurface'
 import { toSkColor } from './SkiaElementMapping'
 import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Color } from './SkiaElementTypes'
 
 export interface CkCanvasProps {
   clear?: Color
+  rotate?: { degree: number, px: number, py: number }
   children?: ReactNode
 }
 
@@ -13,7 +15,7 @@ type CkCanvasChild = CkElement<'ck-surface'> | CkElement<'ck-text'>
 export class CkCanvas implements CkElementContainer<'ck-canvas'> {
   readonly canvasKit: CanvasKit
   readonly props: CkObjectTyping['ck-canvas']['props']
-  readonly skObject: CkObjectTyping['ck-canvas']['type']
+  skObject?: CkObjectTyping['ck-canvas']['type']
   readonly skObjectType: CkObjectTyping['ck-canvas']['name'] = 'SkCanvas'
   readonly type: 'ck-canvas' = 'ck-canvas'
   children: CkCanvasChild[] = []
@@ -23,12 +25,10 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
 
   constructor (
     canvasKit: CanvasKit,
-    props: CkObjectTyping['ck-canvas']['props'],
-    skObject: CkObjectTyping['ck-canvas']['type']
+    props: CkObjectTyping['ck-canvas']['props']
   ) {
     this.canvasKit = canvasKit
     this.props = props
-    this.skObject = skObject
 
     this.fontPaint = new this.canvasKit.SkPaint()
     this.fontPaint.setStyle(this.canvasKit.PaintStyle.Fill)
@@ -37,20 +37,30 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
     this.font = new this.canvasKit.SkFont(null, 14)
   }
 
-  render (): void {
-    this.drawSelf()
+  render (parent: CkElementContainer<any>): void {
+    if (this.skObject === undefined && parent.skObject && isCkSurface(parent)) {
+      this.skObject = parent.skObject.getCanvas()
+    } else {
+      throw new Error('Expected an initialized ck-surface as parent of ck-canvas')
+    }
+
+    this.drawSelf(this.skObject)
     this.children.forEach(child => child.render(this))
+    this.skObject.flush()
   }
 
-  private drawSelf () {
+  private drawSelf (skCanvas: SkCanvas) {
+    skCanvas.save()
     const skColor = toSkColor(this.canvasKit, this.props.clear)
     if (skColor) {
-      this.skObject.clear(skColor)
+      skCanvas.clear(skColor)
     }
-  }
 
-  private renderStringChild (child: string) {
-    this.skObject.drawText(child, 0, 10, this.fontPaint, this.font)
+    if (this.props.rotate) {
+      const { degree, px, py } = this.props.rotate
+      skCanvas.rotate(degree, px, py)
+    }
+    skCanvas.restore()
   }
 }
 
@@ -58,7 +68,6 @@ export function isCkCanvas (ckElement: CkElement<any>): ckElement is CkCanvas {
   return ckElement.type === 'ck-canvas'
 }
 
-export const createCkCanvas: CkElementCreator<'ck-canvas', 'ck-surface'> = (type, props, parent): CkElementContainer<'ck-canvas'> => {
-  const skCanvas = parent.skObject.getCanvas()
-  return new CkCanvas(parent.canvasKit, props, skCanvas)
+export const createCkCanvas: CkElementCreator<'ck-canvas'> = (type, props, canvasKit: CanvasKit): CkElementContainer<'ck-canvas'> => {
+  return new CkCanvas(canvasKit, props)
 }

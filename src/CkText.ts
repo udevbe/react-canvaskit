@@ -39,11 +39,11 @@ class CkText implements CkElement<'ck-text'> {
     if (parent && isCkCanvas(parent)) {
       const skPaint = toSkPaint(this.canvasKit, this.props.paint)
       const skFont = toSkFont(this.canvasKit, this.props.font)
-      parent.skObject.drawText(this.props.children, this.props.x ?? 0, this.props.y ?? 0, skPaint ?? this.paint, skFont ?? this.font)
+      parent.skObject?.drawText(this.props.children, this.props.x ?? 0, this.props.y ?? 0, skPaint ?? this.paint, skFont ?? this.font)
     }
   }
 }
 
-export const createCkText: CkElementCreator<'ck-text', 'ck-canvas'> = (type, props, parent) => {
-  return new CkText(parent.canvasKit, props)
+export const createCkText: CkElementCreator<'ck-text'> = (type, props, canvasKit) => {
+  return new CkText(canvasKit, props)
 }
