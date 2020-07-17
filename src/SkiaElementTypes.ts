@@ -209,7 +209,7 @@ export enum PaintStyle {
 
 export interface Paint {
   blendMode?: BlendMode;
-  color?: Color
+  color?: Color | string
   filterQuality?: FilterQuality;
   strokeCap?: StrokeCap;
   strokeJoin?: StrokeJoin;

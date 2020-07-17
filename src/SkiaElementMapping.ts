@@ -7,7 +7,14 @@ export interface PropsConverter<IN, OUT> {
 
 export const toSkTypeFace: PropsConverter<TypeFace, SkTypeface> = (canvasKit, typeFace) => typeFace ? canvasKit.SkFontMgr.RefDefault().MakeTypefaceFromData(typeFace.data) : undefined
 export const toSkFont: PropsConverter<Font, SkFont> = (canvasKit, font) => font ? new canvasKit.SkFont(font.typeFace === undefined ? null : toSkTypeFace(canvasKit, font.typeFace)!!, font.size) : undefined
-export const toSkColor: PropsConverter<Color, SkColor> = (canvasKit, color) => color ? canvasKit.Color(color.red, color.green, color.blue, color.alpha ?? 1) : undefined
+export const toSkColor: PropsConverter<Color | string, SkColor> = (canvasKit, color) => {
+  if (typeof color === 'string') {
+    // @ts-ignore
+    return <SkColor>canvasKit.parseColorString(color)
+  } else {
+    return color ? canvasKit.Color(color.red, color.green, color.blue, color.alpha ?? 1) : undefined
+  }
+}
 
 export const toSkPaint: PropsConverter<Paint, SkPaint> = (canvasKit, paint) => {
   if (paint === undefined) {

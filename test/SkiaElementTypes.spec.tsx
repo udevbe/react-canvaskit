@@ -32,11 +32,12 @@ describe('canvaskit canvas', () => {
     const gl = require('gl')(width, height)
     await ReactCanvasKit.render(
       <ck-canvas clear={{ red: 70, green: 80, blue: 90 }}>
-        <ck-text x={5} y={50} paint={{ color: { red: 255, green: 0, blue: 0 }, antiAlias: true }} font={{ size: 24 }}>
+        <ck-text x={5} y={50} paint={{ color: '#00FFFF', antiAlias: true }} font={{ size: 24 }}>
           Hello React-CanvasKit!
         </ck-text>
-        <ck-surface width={100} height={100} dx={50} dy={50}>
-          <ck-canvas clear={{ red: 0, green: 0, blue: 255 }} rotate={{ degree: 45, px: 50, py: 50 }}>
+        <ck-surface width={100} height={100} dx={100} dy={100}>
+          <ck-canvas clear='#FF00FF' rotate={{ degree: 45 }}>
+            <ck-text> React-CanvasKit.</ck-text>
           </ck-canvas>
         </ck-surface>
       </ck-canvas>,

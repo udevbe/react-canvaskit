@@ -41,8 +41,8 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
       throw new Error('Expected an initialized ck-canvas as parent of ck-surface')
     }
 
-    this.drawSelf(parent.skObject, this.skObject)
     this.children.forEach(child => child.render(this))
+    this.drawSelf(parent.skObject, this.skObject)
   }
 
   private drawSelf (parent: SkCanvas, skSurface: SkSurface) {

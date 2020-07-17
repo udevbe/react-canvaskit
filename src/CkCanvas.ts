@@ -5,8 +5,8 @@ import { toSkColor } from './SkiaElementMapping'
 import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Color } from './SkiaElementTypes'
 
 export interface CkCanvasProps {
-  clear?: Color
-  rotate?: { degree: number, px: number, py: number }
+  clear?: Color | string
+  rotate?: { degree: number, px?: number, py?: number }
   children?: ReactNode
 }
 
@@ -44,13 +44,14 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
       throw new Error('Expected an initialized ck-surface as parent of ck-canvas')
     }
 
+    this.skObject.save()
     this.drawSelf(this.skObject)
     this.children.forEach(child => child.render(this))
+    this.skObject.restore()
     this.skObject.flush()
   }
 
   private drawSelf (skCanvas: SkCanvas) {
-    skCanvas.save()
     const skColor = toSkColor(this.canvasKit, this.props.clear)
     if (skColor) {
       skCanvas.clear(skColor)
@@ -58,9 +59,8 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
 
     if (this.props.rotate) {
       const { degree, px, py } = this.props.rotate
-      skCanvas.rotate(degree, px, py)
+      skCanvas.rotate(degree, px ?? 0, py ?? 0)
     }
-    skCanvas.restore()
   }
 }
 
