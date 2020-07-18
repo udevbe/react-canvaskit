@@ -1,5 +1,6 @@
 import type { CanvasKit, SkCanvas, SkObject, SkSurface } from 'canvaskit-wasm'
 import { CkCanvasProps, createCkCanvas } from './CkCanvas'
+import { CkLineProps, createCkLine } from './CkLine'
 import { CkSurfaceProps, createCkSurface } from './CkSurface'
 import { CkTextProps, createCkText } from './CkText'
 
@@ -9,7 +10,7 @@ export interface CkObjectTyping {
   'ck-object': { type: SkObject<any>, name: 'SkObject', props: Props }
   'ck-surface': { type: SkSurface, name: 'SkSurface', props: CkSurfaceProps }
   'ck-canvas': { type: SkCanvas, name: 'SkCanvas', props: CkCanvasProps }
-  'ck-line': { type: SkSurface, name: 'SkSurface', props: Props }
+  'ck-line': { type: never, name: 'Line', props: CkLineProps }
   'ck-text': { type: never, name: 'Text', props: CkTextProps }
 }
 
@@ -298,8 +299,7 @@ export interface ParagraphProps {
 
 const CkElements: { [key in CkElementType]: CkElementCreator<any> } = {
   'ck-text': createCkText,
-  // @ts-ignore
-  'ck-line': undefined,
+  'ck-line': createCkLine,
   // @ts-ignore
   'ck-object': undefined,
   'ck-surface': createCkSurface,
@@ -316,7 +316,7 @@ declare global {
       'ck-text': CkTextProps
       'ck-canvas': CkCanvasProps
       'ck-surface': CkSurfaceProps
-      // 'sk-line': Partial<LineProps>
+      'ck-line': CkLineProps
       // 'sk-paragraph': Partial<ParagraphProps>
     }
   }

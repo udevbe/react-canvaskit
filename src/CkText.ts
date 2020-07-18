@@ -44,6 +44,4 @@ class CkText implements CkElement<'ck-text'> {
   }
 }
 
-export const createCkText: CkElementCreator<'ck-text'> = (type, props, canvasKit) => {
-  return new CkText(canvasKit, props)
-}
+export const createCkText: CkElementCreator<'ck-text'> = (type, props, canvasKit) => new CkText(canvasKit, props)
