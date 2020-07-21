@@ -2,9 +2,16 @@ import { CanvasKit, SkCanvas, SkFont, SkPaint } from 'canvaskit-wasm'
 import { ReactNode } from 'react'
 import { isCkSurface } from './CkSurface'
 import { toSkColor } from './SkiaElementMapping'
-import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Color } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementCreator,
+  CkElementProps,
+  CkObjectTyping,
+  Color
+} from './SkiaElementTypes'
 
-export interface CkCanvasProps {
+export interface CkCanvasProps extends CkElementProps<SkCanvas>{
   clear?: Color | string
   rotate?: { degree: number, px?: number, py?: number }
   children?: ReactNode

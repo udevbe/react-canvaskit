@@ -8,26 +8,26 @@ import {
   CkElementType,
   createCkElement,
   isContainerElement,
-  Props
+  CkElementProps
 } from './SkiaElementTypes'
 
 // @ts-ignore
 const canvasKitPromise = CanvasKitInit()
 
 type ContainerContext = {
-  ckElement: CkElement
+  ckElement: CkElement<any>
 }
 
 
 // @ts-ignore
 const hostConfig: HostConfig<//
   CkElementType,// Type
-  Props, // Props
+  CkElementProps<any>, // Props
   CkElementContainer<any>, // Container
   CkElement<any>, // Instance
-  CkElement<'ck-text'>, // TextInstance
+  CkElement<'ck-text'> | CkElement<'ck-paragraph'>, // TextInstance
   any, // HydratableInstance
-  CkElement<any>, // PublicInstance
+  any, // PublicInstance
   ContainerContext, // HostContext
   any, // UpdatePayload
   CkElement<any>[], // ChildSet
@@ -101,7 +101,7 @@ const hostConfig: HostConfig<//
    * @return This should be a boolean value.
    */
   shouldSetTextContent (type, props): boolean {
-    return type === 'ck-text'
+    return (type === 'ck-text') || (type === 'ck-paragraph')
   },
 
   /**
@@ -199,8 +199,8 @@ const hostConfig: HostConfig<//
     (<SkSurface>containerInfo.skObject).flush()
   },
 
-  getPublicInstance (instance: CkElement<any>): CkElement<any> {
-    return instance
+  getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): any {
+    return instance.skObject
   }
 }
 

@@ -1,9 +1,17 @@
 import { CanvasKit, SkFont, SkPaint } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkFont, toSkPaint } from './SkiaElementMapping'
-import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Font, Paint } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementCreator,
+  CkElementProps,
+  CkObjectTyping,
+  Font,
+  Paint
+} from './SkiaElementTypes'
 
-export interface CkTextProps {
+export interface CkTextProps extends CkElementProps<never> {
   x?: number
   y?: number
   paint?: Paint

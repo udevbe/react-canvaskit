@@ -2,9 +2,16 @@ import { CanvasKit, SkCanvas, SkPaint, SkSurface } from 'canvaskit-wasm'
 import { ReactElement } from 'react'
 import { CkCanvas, CkCanvasProps, isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
-import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Paint } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementCreator,
+  CkElementProps,
+  CkObjectTyping,
+  Paint
+} from './SkiaElementTypes'
 
-export interface CkSurfaceProps {
+export interface CkSurfaceProps extends CkElementProps<SkSurface> {
   width: number
   height: number
   dx?: number

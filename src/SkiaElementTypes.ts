@@ -1,22 +1,26 @@
-import type { CanvasKit, SkCanvas, SkObject, SkSurface } from 'canvaskit-wasm'
+import type { CanvasKit, SkCanvas, SkObject, SkParagraph, SkSurface } from 'canvaskit-wasm'
+import { RefObject } from 'react'
 import { CkCanvasProps, createCkCanvas } from './CkCanvas'
 import { CkLineProps, createCkLine } from './CkLine'
+import { CkParagraphProps } from './CkParagraph'
 import { CkSurfaceProps, createCkSurface } from './CkSurface'
 import { CkTextProps, createCkText } from './CkText'
 
-export type Props = { [key: string]: any }
+export type CkElementProps<T> = {
+  ref?: RefObject<T>
+}
 
 export interface CkObjectTyping {
-  'ck-object': { type: SkObject<any>, name: 'SkObject', props: Props }
   'ck-surface': { type: SkSurface, name: 'SkSurface', props: CkSurfaceProps }
   'ck-canvas': { type: SkCanvas, name: 'SkCanvas', props: CkCanvasProps }
   'ck-line': { type: never, name: 'Line', props: CkLineProps }
   'ck-text': { type: never, name: 'Text', props: CkTextProps }
+  'ck-paragraph': { type: SkParagraph, name: 'SkParagraph', props: CkParagraphProps }
 }
 
 export type CkElementType = keyof CkObjectTyping
 
-export interface CkElement<TypeName extends keyof CkObjectTyping = 'ck-object'> {
+export interface CkElement<TypeName extends keyof CkObjectTyping> {
   readonly canvasKit: CanvasKit,
   readonly type: TypeName
   readonly props: CkObjectTyping[TypeName]['props']
@@ -31,10 +35,10 @@ export interface CkElementCreator<TypeName extends keyof CkObjectTyping> {
 }
 
 export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
-  return (ckElement as CkElementContainer).children !== undefined
+  return (ckElement as CkElementContainer<any>).children !== undefined
 }
 
-export interface CkElementContainer<TypeName extends keyof CkObjectTyping = 'ck-object'> extends CkElement<TypeName> {
+export interface CkElementContainer<TypeName extends keyof CkObjectTyping> extends CkElement<TypeName> {
   children: CkElement<any>[]
 }
 
@@ -205,7 +209,18 @@ export interface TwoPointConicalGradientShader {
 }
 
 export enum PaintStyle {
-  // TODO
+  /**
+   * Fill the geometry.
+   */
+  Fill = 0,
+  /**
+   * Stroke the geometry.
+   */
+  Stroke = 1,
+  /**
+   * Fill and stroke the geometry.
+   */
+  StrokeAndFill = 2
 }
 
 export interface Paint {
@@ -234,15 +249,67 @@ export interface LineProps {
 }
 
 export enum TextAlignEnum {
-  // TODO
+  Left = 0,
+  Center = 1,
+  Right = 2
 }
 
 export enum TextDirectionEnum {
+  Ltr = 0,
+  Rtl = 1
   // TODO
 }
 
 export enum FontWeightEnum {
-  // TODO
+  /**
+   * A thick font weight of 900.
+   */
+  Black = 900,
+  /**
+   * A thick font weight of 700. This is the default for a bold font.
+   */
+  Bold = 700,
+  /**
+   * A thick font weight of 1000.
+   */
+  ExtraBlack = 1000,
+  /**
+   * A thick font weight of 800.
+   */
+  ExtraBold = 800,
+  /**
+   * A thin font weight of 200.
+   */
+  ExtraLight = 200,
+  /**
+   * The font has no thickness at all.
+   */
+  Invisible = 0,
+
+  /**
+   * A thin font weight of 300.
+   */
+  Light = 300,
+
+  /**
+   *A thicker font weight of 500.
+   */
+  Medium = 500,
+
+  /**
+   *A typical font weight of 400. This is the default font weight.
+   */
+  Normal = 400,
+
+  /**
+   *A thick font weight of 600.
+   */
+  SemiBold = 600,
+
+  /**
+   *A thin font weight of 100.
+   */
+  Thin = 100
 }
 
 export enum FontSlantEnum {
@@ -252,7 +319,42 @@ export enum FontSlantEnum {
 }
 
 export enum FontWidthEnum {
-  // TODO
+  /**
+   * A condensed font width of 3.
+   */
+  Condensed = 3,
+  /**
+   * An expanded font width of 7.
+   */
+  Expanded = 7,
+  /**
+   *A condensed font width of 2.
+   */
+  ExtraCondensed = 2,
+  /**
+   *An expanded font width of 8.
+   */
+  ExtraExpanded = 8,
+  /**
+   *A normal font width of 5. This is the default font width.
+   */
+  Normal = 5,
+  /**
+   *A condensed font width of 4.
+   */
+  SemiCondensed = 4,
+  /**
+   *An expanded font width of 6.
+   */
+  SemiExpanded = 6,
+  /**
+   *A condensed font width of 1.
+   */
+  UltraCondensed = 1,
+  /**
+   *An expanded font width of 9.
+   */
+  UltraExpanded = 9,
 }
 
 export interface TypeFace {
@@ -264,29 +366,30 @@ export interface Font {
   size: number
 }
 
-export interface FontStyle {
+export interface CkFontStyle {
   weight?: FontWeightEnum;
   slant?: FontSlantEnum;
   width?: FontWidthEnum;
 }
 
 export interface TextStyle {
-  backgroundColor: Color;
-  color: Color;
-  decoration: number;
-  decorationThickness: number;
-  fontFamilies: string[];
-  fontSize: number;
-  fontStyle: FontStyle;
-  foregroundColor: Color;
+  backgroundColor?: Color | string;
+  color?: Color | string;
+  decoration?: number;
+  decorationThickness?: number;
+  fontFamilies?: string[];
+  fontSize?: number;
+  fontStyle?: CkFontStyle;
+  foregroundColor?: Color | string;
 }
 
 export interface ParagraphStyle {
-  disableHinting: boolean;
-  heightMultiplier: number;
-  maxLines: number;
-  textAlign: TextAlignEnum;
-  textDirection: TextDirectionEnum;
+  disableHinting?: boolean;
+  heightMultiplier?: number;
+  ellipsis?: string,
+  maxLines?: number;
+  textAlign?: TextAlignEnum;
+  textDirection?: TextDirectionEnum;
   textStyle: TextStyle;
 }
 
@@ -300,13 +403,12 @@ export interface ParagraphProps {
 const CkElements: { [key in CkElementType]: CkElementCreator<any> } = {
   'ck-text': createCkText,
   'ck-line': createCkLine,
-  // @ts-ignore
-  'ck-object': undefined,
   'ck-surface': createCkSurface,
-  'ck-canvas': createCkCanvas
+  'ck-canvas': createCkCanvas,
+  'ck-paragraph': createCkParagraph
 }
 
-export function createCkElement (type: CkElementType, props: Props, canvasKit: CanvasKit): CkElement {
+export function createCkElement (type: CkElementType, props: CkElementProps<any>, canvasKit: CanvasKit): CkElement<any> {
   return CkElements[type](type, props, canvasKit)
 }
 
@@ -317,7 +419,7 @@ declare global {
       'ck-canvas': CkCanvasProps
       'ck-surface': CkSurfaceProps
       'ck-line': CkLineProps
-      // 'sk-paragraph': Partial<ParagraphProps>
+      'ck-paragraph': CkParagraphProps
     }
   }
 }

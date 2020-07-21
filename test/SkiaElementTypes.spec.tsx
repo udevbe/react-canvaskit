@@ -3,6 +3,7 @@ import { writeFileSync } from 'fs'
 // @ts-ignore
 import * as React from 'react'
 import * as ReactCanvasKit from '../src'
+import { PaintStyle, TextAlignEnum } from '../src/SkiaElementTypes'
 
 function dumpRenderToFile (gl: WebGLRenderingContext, width: number, height: number) {
   //Write output as a PPM formatted image
@@ -30,19 +31,27 @@ describe('canvaskit canvas', () => {
     const width = 400
     const height = 300
     const gl = require('gl')(width, height)
+
+    const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
+
     await ReactCanvasKit.render(
-      <ck-canvas clear={{ red: 255, green: 165, blue: 0 }}>
-        <ck-text x={5} y={50} paint={{ color: '#00FFFF', antiAlias: true }} font={{ size: 24 }}>
-          Hello React-CanvasKit!
-        </ck-text>
-        <ck-surface width={100} height={100} dx={100} dy={100}>
-          <ck-canvas clear='#FF00FF' rotate={{ degree: 45 }}>
-            <ck-text> React-CanvasKit.</ck-text>
-            <ck-line x1={0} y1={10} x2={142} y2={10} paint={{ antiAlias: true, color: '#FFFFFF', strokeWidth: 10 }}/>
-          </ck-canvas>
-        </ck-surface>
+      <ck-canvas clear='#FFFFFF'>
+        <ck-paragraph
+          textStyle={{
+            color: '#000000',
+            fontFamilies: ['Roboto', 'Noto Color Emoji'],
+            fontSize: 50
+          }}
+          textAlign={TextAlignEnum.Left}
+          maxLines={7}
+          ellipsis='...'
+        >
+          The quick brown fox 🦊 ate a zesty hamburgerfons 🍔.\nThe 👩‍👩‍👧‍👧 laughed.
+        </ck-paragraph>
+        <ck-line x1={300} y1={0} x2={300} y2={400} paint={fontPaint}/>
       </ck-canvas>,
       gl, width, height)
+
     dumpRenderToFile(gl, width, height)
     done()
   })

@@ -1,9 +1,16 @@
 import { CanvasKit, SkPaint } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
-import { CkElement, CkElementContainer, CkElementCreator, CkObjectTyping, Paint } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementCreator,
+  CkElementProps,
+  CkObjectTyping,
+  Paint
+} from './SkiaElementTypes'
 
-export interface CkLineProps {
+export interface CkLineProps extends CkElementProps<never>{
   x1: number
   y1: number
   x2: number

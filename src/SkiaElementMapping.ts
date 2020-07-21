@@ -1,5 +1,25 @@
-import { CanvasKit, SkColor, SkFont, SkPaint, SkTypeface } from 'canvaskit-wasm'
-import { Color, Font, Paint, TypeFace } from './SkiaElementTypes'
+import {
+  CanvasKit,
+  FontStyle,
+  SkColor,
+  SkFont,
+  SkPaint,
+  SkParagraphStyle,
+  SkTextStyle,
+  SkTypeface
+} from 'canvaskit-wasm'
+import {
+  CkFontStyle,
+  Color,
+  Font,
+  FontSlantEnum,
+  FontWeightEnum,
+  FontWidthEnum,
+  Paint,
+  ParagraphStyle,
+  TextStyle,
+  TypeFace
+} from './SkiaElementTypes'
 
 export interface PropsConverter<IN, OUT> {
   (canvasKit: CanvasKit, propIn?: IN): OUT | undefined
@@ -53,6 +73,38 @@ export const toSkPaint: PropsConverter<Paint, SkPaint> = (canvasKit, paint) => {
   return skPaint
 }
 
+export const toFontStyle: PropsConverter<CkFontStyle, FontStyle> = (canvasKit, fontStyle): FontStyle => {
+  return {
+    slant: { value: fontStyle?.slant ?? FontSlantEnum.Upright },
+    weight: { value: fontStyle?.weight ?? FontWeightEnum.Normal },
+    width: { value: fontStyle?.width ?? FontWidthEnum.Normal }
+  }
+}
 
+export const toSkTextStyle: PropsConverter<TextStyle, SkTextStyle> = (canvasKit, textStyle) => {
+  return {
+    backgroundColor: toSkColor(canvasKit, textStyle?.backgroundColor) ?? canvasKit.WHITE,
+    color: toSkColor(canvasKit, textStyle?.color) ?? canvasKit.BLACK,
+    decoration: textStyle?.decoration ?? 0,
+    decorationThickness: textStyle?.decorationThickness ?? 0,
+    fontFamilies: textStyle?.fontFamilies ?? [],
+    fontSize: textStyle?.fontSize ?? 14,
+    fontStyle: <FontStyle>toFontStyle(canvasKit, textStyle?.fontStyle),
+    foregroundColor: toSkColor(canvasKit, textStyle?.foregroundColor) ?? canvasKit.BLACK
+  }
+}
 
+export const toSkParagraphStyle: PropsConverter<ParagraphStyle, SkParagraphStyle> = (canvasKit, paragraphStyle) => {
+  const textAlign = paragraphStyle?.textAlign ? { value: paragraphStyle.textAlign } : undefined
+  const textDirection = paragraphStyle?.textDirection ? { value: paragraphStyle.textDirection } : undefined
+
+  return new canvasKit.ParagraphStyle({
+    disableHinting: paragraphStyle?.disableHinting,
+    ellipsis: paragraphStyle?.ellipsis,
+    maxLines: paragraphStyle?.maxLines,
+    textAlign,
+    textDirection,
+    textStyle: <SkTextStyle>toSkTextStyle(canvasKit, paragraphStyle?.textStyle)
+  })
+}
 
