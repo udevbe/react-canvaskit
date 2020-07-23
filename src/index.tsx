@@ -1,1 +1,1 @@
-export { render } from './ReactCanvasKit'
+export * from './ReactCanvasKit'

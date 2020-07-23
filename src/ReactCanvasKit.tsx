@@ -1,42 +1,68 @@
-import type { CanvasKit, SkSurface } from 'canvaskit-wasm'
+import type { CanvasKit, SkFontManager } from 'canvaskit-wasm'
 import * as CanvasKitInit from 'canvaskit-wasm'
-import type { HostConfig, ReactNodeList } from 'react-reconciler'
-import * as  ReactReconciler from 'react-reconciler'
+import React, { FunctionComponent, ReactNode, useContext } from 'react'
+import type { HostConfig } from 'react-reconciler'
+import ReactReconciler, { ReactNodeList } from 'react-reconciler'
 import {
   CkElement,
   CkElementContainer,
+  CkElementProps,
   CkElementType,
   createCkElement,
-  isContainerElement,
-  CkElementProps
+  isContainerElement
 } from './SkiaElementTypes'
 
 // @ts-ignore
-const canvasKitPromise = CanvasKitInit()
+const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit()
+let canvasKit: CanvasKit | undefined
+
+let CanvasKitContext: React.Context<CanvasKit>
+export let useCanvasKit: () => CanvasKit
+export let CanvasKitProvider: FunctionComponent
+
+let FontManagerContext: React.Context<SkFontManager>
+export let useFontManager: () => SkFontManager
+export let FontManagerProvider: FunctionComponent<{ fontData: ArrayBuffer | ArrayBuffer[] | undefined, children?: ReactNode }>
+
+export async function init () {
+  canvasKit = await canvasKitPromise
+  // const copy to make the TS compiler happy when we pass it down to a lambda
+  const ck = canvasKit
+
+  CanvasKitContext = React.createContext(ck)
+  useCanvasKit = () => useContext(CanvasKitContext)
+  CanvasKitProvider = ({ children }) => <CanvasKitContext.Provider value={ck}>children</CanvasKitContext.Provider>
+
+  FontManagerContext = React.createContext(ck.SkFontMgr.RefDefault())
+  useFontManager = () => useContext(FontManagerContext)
+  FontManagerProvider = (props: { fontData: ArrayBuffer | ArrayBuffer[] | undefined, children?: ReactNode }) => {
+    return <FontManagerContext.Provider
+      value={props.fontData ? ck.SkFontMgr.FromData(props.fontData) : ck.SkFontMgr.RefDefault()}>
+      children
+    </FontManagerContext.Provider>
+  }
+}
 
 type ContainerContext = {
   ckElement: CkElement<any>
 }
 
+interface ReactCanvasKitHostConfig extends HostConfig<CkElementType,
+  CkElementProps<any>,
+  CkElementContainer<any>,
+  CkElement<any>,
+  CkElement<'ck-text'> | CkElement<'ck-paragraph'>,
+  any,
+  any,
+  ContainerContext,
+  any,
+  CkElement<any>[],
+  any,
+  any> {
+}
 
-// @ts-ignore
-const hostConfig: HostConfig<//
-  CkElementType,// Type
-  CkElementProps<any>, // Props
-  CkElementContainer<any>, // Container
-  CkElement<any>, // Instance
-  CkElement<'ck-text'> | CkElement<'ck-paragraph'>, // TextInstance
-  any, // HydratableInstance
-  any, // PublicInstance
-  ContainerContext, // HostContext
-  any, // UpdatePayload
-  CkElement<any>[], // ChildSet
-  any, // TimeoutHandle
-  any // NoTimeout
-  > & { canvasKit: CanvasKit }
-  = {
-  // @ts-ignore lazily set when reconciler is created
-  canvasKit: undefined,
+// @ts-ignore TODO implement missing functions
+const hostConfig: ReactCanvasKitHostConfig = {
   /**
    * This function is used by the reconciler in order to calculate current time for prioritising work.
    */
@@ -196,7 +222,7 @@ const hostConfig: HostConfig<//
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   resetAfterCommit (containerInfo) {
-    (<SkSurface>containerInfo.skObject).flush()
+    containerInfo.skObject.flush()
   },
 
   getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): any {
@@ -211,19 +237,43 @@ canvaskitReconciler.injectIntoDevTools({
   rendererPackageName: 'react-canvaskit' // package name
 })
 
-export async function render (element: ReactNodeList, glRenderingContext: WebGLRenderingContext, width: number, height: number) {
+export interface RenderTarget {
+  canvasKit: CanvasKit,
+  glRenderingContext: WebGLRenderingContext
+  width: number
+  height: number
+}
+
+
+export function render (
+  element: ReactNodeList,
+  {
+    glRenderingContext,
+    width,
+    height
+  }: {
+    glRenderingContext: WebGLRenderingContext
+    width: number
+    height: number
+  }) {
+  if (canvasKit === undefined) {
+    throw new Error('Not initialized')
+  }
+
   const isConcurrent = false
   const hydrate = false
 
-  const canvasKit = await canvasKitPromise
+  // @ts-ignore
   const context = canvasKit.GetWebGLContext({
     getContext () {
       return glRenderingContext
     }
   })
+  // @ts-ignore
   const grCtx = canvasKit.MakeGrContext(context)
+  // @ts-ignore
   const skSurface = canvasKit.MakeOnScreenGLSurface(grCtx, width, height, null)
-  // @ts-ignore our root object doesn't can't have a parent
+  // @ts-ignore our root object can' t have a parent
   const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
@@ -237,17 +287,12 @@ export async function render (element: ReactNodeList, glRenderingContext: WebGLR
   }
   const container = canvaskitReconciler.createContainer(ckSurfaceElement, isConcurrent, hydrate)
 
-  // Since there is no parent (since this is the root fiber). We set parentComponent to null.
-  const parentComponent = null
-  // Start reconcilation and render the result
   return new Promise<void>(resolve => {
     canvaskitReconciler.updateContainer(
       element,
       container,
-      parentComponent,
-      () => {
-        resolve()
-      }
+      null,
+      resolve
     )
   })
 }

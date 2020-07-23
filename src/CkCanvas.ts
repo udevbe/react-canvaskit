@@ -11,7 +11,7 @@ import {
   Color
 } from './SkiaElementTypes'
 
-export interface CkCanvasProps extends CkElementProps<SkCanvas>{
+export interface CkCanvasProps extends CkElementProps<SkCanvas> {
   clear?: Color | string
   rotate?: { degree: number, px?: number, py?: number }
   children?: ReactNode
@@ -75,6 +75,6 @@ export function isCkCanvas (ckElement: CkElement<any>): ckElement is CkCanvas {
   return ckElement.type === 'ck-canvas'
 }
 
-export const createCkCanvas: CkElementCreator<'ck-canvas'> = (type, props, canvasKit: CanvasKit): CkElementContainer<'ck-canvas'> => {
-  return new CkCanvas(canvasKit, props)
-}
+export const createCkCanvas: CkElementCreator<'ck-canvas'> =
+  (type, props, canvasKit: CanvasKit): CkElementContainer<'ck-canvas'> =>
+    new CkCanvas(canvasKit, props)

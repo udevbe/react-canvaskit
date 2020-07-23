@@ -1,6 +1,6 @@
 import React from 'react'
-import * as ReactCanvasKit from '../../../src'
-import ParagraphDemo from '../../ParagraphDemo'
+import { render } from '../../../src'
+import { App } from './App'
 
 const htmlCanvasElement = document.createElement('canvas')
 document.body.appendChild(htmlCanvasElement)
@@ -11,11 +11,11 @@ if (gl === null) {
   throw new Error('Browser does not support WebGL.')
 }
 
-ReactCanvasKit.render(
-  <React.StrictMode>
-    <ParagraphDemo/>
-  </React.StrictMode>,
-  gl,
-  htmlCanvasElement.width,
-  htmlCanvasElement.height
+render(
+  <React.StrictMode><App/></React.StrictMode>,
+  {
+    glRenderingContext: gl,
+    width: htmlCanvasElement.width,
+    height: htmlCanvasElement.height
+  }
 )

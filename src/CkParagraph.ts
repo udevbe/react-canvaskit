@@ -1,12 +1,21 @@
-import { CanvasKit, SkParagraph, SkParagraphStyle } from 'canvaskit-wasm'
+import { CanvasKit, SkFontManager, SkParagraph, SkParagraphStyle } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkParagraphStyle } from './SkiaElementMapping'
-import { CkElement, CkElementContainer, CkElementProps, CkObjectTyping, ParagraphStyle } from './SkiaElementTypes'
+import {
+  CkElement,
+  CkElementContainer,
+  CkElementCreator,
+  CkElementProps,
+  CkObjectTyping,
+  ParagraphStyle
+} from './SkiaElementTypes'
 
 export interface CkParagraphProps extends ParagraphStyle, CkElementProps<SkParagraph> {
   x?: number,
   y?: number,
-  children: string
+  children?: string,
+  // TODO use a context to manage fonts
+  fontManager?: SkFontManager
 }
 
 class CkParagraph implements CkElement<'ck-paragraph'> {
@@ -24,8 +33,11 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
 
   render (parent: CkElementContainer<any>): void {
     if (this.skObject === undefined) {
-      const skParagraphBuilder = this.canvasKit.ParagraphBuilder.Make(<SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props), this.canvasKit.SkFontMgr.RefDefault())
-      skParagraphBuilder.addText(this.props.children)
+      const skParagraphBuilder =
+        this.canvasKit.ParagraphBuilder.Make(<SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props), this.props.fontManager ?? this.canvasKit.SkFontMgr.RefDefault())
+      if (this.props.children) {
+        skParagraphBuilder.addText(this.props.children)
+      }
       this.skObject = skParagraphBuilder.build()
     }
     if (isCkCanvas(parent)) {
@@ -33,3 +45,7 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
     }
   }
 }
+
+export const createCkParagraph: CkElementCreator<'ck-paragraph'> =
+  (type, props, canvasKit): CkElement<'ck-paragraph'> =>
+    new CkParagraph(canvasKit, props)

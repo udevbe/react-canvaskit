@@ -2,7 +2,7 @@ import type { CanvasKit, SkCanvas, SkObject, SkParagraph, SkSurface } from 'canv
 import { RefObject } from 'react'
 import { CkCanvasProps, createCkCanvas } from './CkCanvas'
 import { CkLineProps, createCkLine } from './CkLine'
-import { CkParagraphProps } from './CkParagraph'
+import { CkParagraphProps, createCkParagraph } from './CkParagraph'
 import { CkSurfaceProps, createCkSurface } from './CkSurface'
 import { CkTextProps, createCkText } from './CkText'
 

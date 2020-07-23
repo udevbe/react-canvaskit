@@ -1,5 +1,6 @@
 import type { SkParagraph } from 'canvaskit-wasm'
 import * as React from 'react'
+import { useFontManager } from '../../../src'
 import { PaintStyle, TextAlignEnum } from '../../../src/SkiaElementTypes'
 
 const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
@@ -11,9 +12,10 @@ const str = 'The quick brown fox 🦊 ate a zesty hamburgerfons 🍔.\nThe 👩�
 export default () => {
   const skParagraphRef = React.useRef<SkParagraph>(null)
   const requestRef = React.useRef<number>()
+  const fontManager = useFontManager()
 
   const calcWrapTo = (time: number): number => 350 + 150 * Math.sin(time / 2000)
-  const [wrapTo, setWrapTo] = React.useState(calcWrapTo(Date.now()))
+  const [wrapTo, setWrapTo] = React.useState(calcWrapTo(performance.now()))
 
   const animate: FrameRequestCallback = time => {
     setWrapTo(calcWrapTo(time))
@@ -41,6 +43,7 @@ export default () => {
   return (
     <ck-canvas clear='#FFFFFF'>
       <ck-paragraph
+        fontManager={fontManager}
         ref={skParagraphRef}
         textStyle={{
           color: '#000000',
