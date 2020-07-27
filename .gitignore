@@ -196,3 +196,6 @@ dist
 /.idea/codeStyles/Project.xml
 /.idea/.gitignore
 /.idea/jsLibraryMappings.xml
+/types
+/docs
+/dist
