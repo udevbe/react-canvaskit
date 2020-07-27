@@ -3,9 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@types/react": "^16.9.43",
     "react": "^16.13.1",
     "react-scripts": "3.4.1",
+    "react-canvaskit": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^16.9.43",
     "typescript": "~3.9.7"
   },
   "scripts": {

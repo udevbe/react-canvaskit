@@ -1,7 +1,6 @@
 import type { SkParagraph } from 'canvaskit-wasm'
 import * as React from 'react'
-import { useFontManager } from '../../../src'
-import { PaintStyle, TextAlignEnum } from '../../../src/SkiaElementTypes'
+import { PaintStyle, TextAlignEnum, useFontManager } from 'react-canvaskit'
 
 const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
 
@@ -47,7 +46,6 @@ export default () => {
         ref={skParagraphRef}
         textStyle={{
           color: '#000000',
-          // TODO custom font manager
           fontFamilies: ['Roboto', 'Noto Color Emoji'],
           fontSize: 50
         }}
