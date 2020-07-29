@@ -45,8 +45,10 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
   }
 
   render (parent: CkElementContainer<any>): void {
-    if (this.skObject === undefined && parent.skObject && isCkSurface(parent)) {
-      this.skObject = parent.skObject.getCanvas()
+    if (parent.skObject && isCkSurface(parent)) {
+      if (this.skObject === undefined) {
+        this.skObject = parent.skObject.getCanvas()
+      }
     } else {
       throw new Error('Expected an initialized ck-surface as parent of ck-canvas')
     }

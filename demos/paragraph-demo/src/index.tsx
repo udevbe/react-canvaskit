@@ -24,9 +24,7 @@ const renderContext = {
 
 init().then(() => {
   render(
-    <React.StrictMode>
-      <App/>
-    </React.StrictMode>,
+    <App/>,
     renderContext
   )
 })

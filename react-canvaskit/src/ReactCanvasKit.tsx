@@ -1,8 +1,9 @@
 import type { CanvasKit, SkFontManager } from 'canvaskit-wasm'
 import * as CanvasKitInit from 'canvaskit-wasm'
-import React, { FunctionComponent, ReactNode, useContext } from 'react'
-import type { HostConfig } from 'react-reconciler'
-import ReactReconciler, { ReactNodeList } from 'react-reconciler'
+import type { FunctionComponent, ReactNode } from 'react'
+import * as React from 'react'
+import type { HostConfig, ReactNodeList } from 'react-reconciler'
+import * as ReactReconciler from 'react-reconciler'
 import {
   CkElement,
   CkElementContainer,
@@ -13,7 +14,9 @@ import {
 } from './SkiaElementTypes'
 
 // @ts-ignore
-const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit()
+const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
+  locateFile: (file: string) => 'https://unpkg.com/canvaskit-wasm@0.16.2/bin/' + file
+})
 let canvasKit: CanvasKit | undefined
 
 let CanvasKitContext: React.Context<CanvasKit>
@@ -30,15 +33,15 @@ export async function init () {
   const ck = canvasKit
 
   CanvasKitContext = React.createContext(ck)
-  useCanvasKit = () => useContext(CanvasKitContext)
+  useCanvasKit = () => React.useContext(CanvasKitContext)
   CanvasKitProvider = ({ children }) => <CanvasKitContext.Provider value={ck}>children</CanvasKitContext.Provider>
 
   FontManagerContext = React.createContext(ck.SkFontMgr.RefDefault())
-  useFontManager = () => useContext(FontManagerContext)
+  useFontManager = () => React.useContext(FontManagerContext)
   FontManagerProvider = (props: { fontData: ArrayBuffer | ArrayBuffer[] | undefined, children?: ReactNode }) => {
     return <FontManagerContext.Provider
       value={props.fontData ? ck.SkFontMgr.FromData(props.fontData) : ck.SkFontMgr.RefDefault()}>
-      children
+      {props.children}
     </FontManagerContext.Provider>
   }
 }
@@ -141,10 +144,9 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
-  // @ts-ignore
-  // createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle) {
-  //   return null
-  // },
+  createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle): CkElement<'ck-text'> | CkElement<'ck-paragraph'> {
+    throw new Error(`The text '${text}' must be wrapped in a ck-text or ck-paragraph element.`)
+  },
 
   /**
    * Create instance is called on all host nodes except the leaf text nodes. So we should return the correct view
@@ -227,6 +229,29 @@ const hostConfig: ReactCanvasKitHostConfig = {
 
   getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): any {
     return instance.skObject
+  },
+
+  prepareUpdate (
+    instance,
+    type,
+    oldProps,
+    newProps,
+    rootContainerInstance,
+    hostContext) {
+    // TODO
+  },
+
+  cloneInstance (
+    instance,
+    updatePayload,
+    type,
+    oldProps,
+    newProps,
+    internalInstanceHandle,
+    keepChildren,
+    recyclableInstance): CkElement<any> {
+    // TODO implement a way where we can check which props require a whole new skobject to be created, or just updated the old one.
+    return createCkElement(type, newProps, instance.canvasKit)
   }
 }
 
@@ -273,7 +298,7 @@ export function render (
   const grCtx = canvasKit.MakeGrContext(context)
   // @ts-ignore
   const skSurface = canvasKit.MakeOnScreenGLSurface(grCtx, width, height, null)
-  // @ts-ignore our root object can' t have a parent
+  // @ts-ignore our root object can't have a parent
   const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
@@ -292,7 +317,7 @@ export function render (
       element,
       container,
       null,
-      resolve
+      () => resolve()
     )
   })
 }

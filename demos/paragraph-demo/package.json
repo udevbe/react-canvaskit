@@ -5,9 +5,10 @@
   "dependencies": {
     "react": "^16.13.1",
     "react-scripts": "3.4.1",
-    "react-canvaskit": "0.1.0"
+    "react-canvaskit": "file:../../react-canvaskit"
   },
   "devDependencies": {
+    "@types/canvaskit-wasm": "^0.9.0",
     "@types/react": "^16.9.43",
     "typescript": "~3.9.7"
   },

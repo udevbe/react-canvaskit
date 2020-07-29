@@ -1454,6 +1454,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/canvaskit-wasm@^0.9.0":
+  version "0.9.0"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/canvaskit-wasm/-/canvaskit-wasm-0.9.0.tgz#42b6e23e1bebc2d34a47c62d63b75740024fa293"
+  integrity sha1-QrbiPhvrwtNKR8YtY7dXQAJPopM=
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
@@ -2675,6 +2680,11 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, can
   version "1.0.30001107"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/caniuse-lite/-/caniuse-lite-1.0.30001107.tgz#809360df7a5b3458f627aa46b0f6ed6d5239da9a"
   integrity sha1-gJNg33pbNFj2J6pGsPbtbVI52po=
+
+canvaskit-wasm@^0.16.2:
+  version "0.16.2"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.16.2.tgz#defb8f0b1e6bef2fae6aef1b4c90083dbdf9ee7a"
+  integrity sha1-3vuPCx5r7y+uau8bTJAIPb357no=
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -8476,6 +8486,12 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
+"react-canvaskit@file:../../react-canvaskit":
+  version "0.0.1"
+  dependencies:
+    canvaskit-wasm "^0.16.2"
+    react-reconciler "^0.25.1"
+
 react-dev-utils@^10.2.1:
   version "10.2.1"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-dev-utils/-/react-dev-utils-10.2.1.tgz#f6de325ae25fa4d546d09df4bb1befdc6dd19c19"
@@ -8515,6 +8531,16 @@ react-is@^16.8.1, react-is@^16.8.4:
   version "16.13.1"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha1-eJcppNw23imZ3BVt1sHZwYzqVqQ=
+
+react-reconciler@^0.25.1:
+  version "0.25.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-reconciler/-/react-reconciler-0.25.1.tgz#f9814d59d115e1210762287ce987801529363aaa"
+  integrity sha1-+YFNWdEV4SEHYih86YeAFSk2Oqo=
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    prop-types "^15.6.2"
+    scheduler "^0.19.1"
 
 react-scripts@3.4.1:
   version "3.4.1"
@@ -9056,6 +9082,14 @@ saxes@^3.1.9:
   integrity sha1-1Z0f0zLskq2YouCy7mRHAjhLHFs=
   dependencies:
     xmlchars "^2.1.1"
+
+scheduler@^0.19.1:
+  version "0.19.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
+  integrity sha1-Tz4u0sGn1laB9MhU+oxaHMtA8ZY=
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 schema-utils@^1.0.0:
   version "1.0.0"
