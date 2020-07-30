@@ -15,7 +15,7 @@ import {
 
 // @ts-ignore
 const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
-  locateFile: (file: string) => 'https://unpkg.com/canvaskit-wasm@0.16.2/bin/' + file
+  locateFile: (file: string) => `https://unpkg.com/canvaskit-wasm@0.16.2/bin/${file}`
 })
 let canvasKit: CanvasKit | undefined
 

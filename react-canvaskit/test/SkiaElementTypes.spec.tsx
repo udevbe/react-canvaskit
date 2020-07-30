@@ -3,7 +3,6 @@ import { writeFileSync } from 'fs'
 // @ts-ignore
 import * as React from 'react'
 import * as ReactCanvasKit from '../src'
-import { PaintStyle } from '../src/SkiaElementTypes'
 import { App } from './App'
 
 function dumpRenderToFile (gl: WebGLRenderingContext, width: number, height: number) {
@@ -27,46 +26,11 @@ ${width} ${height}
   writeFileSync('./snap.ppm', header + '\n' + body)
 }
 
-jest.useFakeTimers()
-
 describe('canvaskit canvas', () => {
-  // it('renders using the provided properties', async done => {
-  //   const width = 400
-  //   const height = 300
-  //   const gl = require('gl')(width, height)
-  //
-  //   const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
-  //
-  //   await ReactCanvasKit.render(
-  //     <ck-canvas clear='#FFFFFF'>
-  //       <ck-paragraph
-  //         textStyle={{
-  //           color: '#000000',
-  //           fontFamilies: ['Roboto', 'Noto Color Emoji'],
-  //           fontSize: 50
-  //         }}
-  //         textAlign={TextAlignEnum.Left}
-  //         maxLines={7}
-  //         ellipsis='...'
-  //       >
-  //         The quick brown fox 🦊 ate a zesty hamburgerfons 🍔.\nThe 👩‍👩‍👧‍👧 laughed.
-  //       </ck-paragraph>
-  //       <ck-line x1={300} y1={0} x2={300} y2={400} paint={fontPaint}/>
-  //     </ck-canvas>,
-  //     { glRenderingContext: gl, width, height }
-  //     )
-  //
-  //   dumpRenderToFile(gl, width, height)
-  //   done()
-  // })
-
-
-  it('renders using the provided properties', async done => {
-    const width = 400
-    const height = 300
+  it('renders a paragraph with different fonts', async done => {
+    const width = 800
+    const height = 600
     const gl = require('gl')(width, height)
-
-    const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
 
     await ReactCanvasKit.init()
     await ReactCanvasKit.render(
@@ -74,7 +38,8 @@ describe('canvaskit canvas', () => {
       { glRenderingContext: gl, width, height }
     )
 
+    // TODO auto compare output file to reference image
     dumpRenderToFile(gl, width, height)
-    // done()
-  }, 60000)
+
+  }, 5000)
 })

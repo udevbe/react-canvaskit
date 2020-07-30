@@ -11,10 +11,10 @@ import {
 } from './SkiaElementTypes'
 
 export interface CkParagraphProps extends ParagraphStyle, CkElementProps<SkParagraph> {
+  layout: number,
   x?: number,
   y?: number,
   children?: string,
-  // TODO use a context to manage fonts
   fontManager?: SkFontManager
 }
 
@@ -41,6 +41,7 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
       this.skObject = skParagraphBuilder.build()
     }
     if (isCkCanvas(parent)) {
+      this.skObject.layout(this.props.layout)
       parent.skObject?.drawParagraph(this.skObject, this.props.x ?? 0, this.props.y ?? 0)
     }
   }
