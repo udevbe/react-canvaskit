@@ -11,7 +11,6 @@ const notoColorEmojiPromise = fetch('https://storage.googleapis.com/skia-cdn/mis
 const fontsPromise = Promise.all([robotoPromise, notoColorEmojiPromise])
 
 export const App: FunctionComponent = () => {
-
   const [fonts, setFonts] = React.useState<ArrayBuffer[] | undefined>(undefined)
   fontsPromise.then(fetchedFonts => setFonts(fetchedFonts))
 

@@ -26,8 +26,10 @@
     "commitmsg": "commitlint -E HUSKY_GIT_PARAMS"
   },
   "dependencies": {
-    "canvaskit-wasm": "^0.16.2",
-    "react-reconciler": "^0.25.1"
+    "react-reconciler": "0.25.1"
+  },
+  "peerDependencies": {
+    "canvaskit-wasm": "0.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
@@ -42,6 +44,7 @@
     "babel-jest": "^26.1.0",
     "colors": "^1.4.0",
     "commitizen": "^4.1.2",
+    "canvaskit-wasm": "0.16.2",
     "coveralls": "^3.1.0",
     "cpy-cli": "^3.1.1",
     "cross-env": "^7.0.2",
@@ -54,7 +57,6 @@
     "lint-staged": "^10.2.11",
     "prettier": "^2.0.5",
     "prompt": "^1.0.0",
-    "react": "^16.13.1",
     "react-devtools": "^4.7.0",
     "replace-in-file": "^6.1.0",
     "rimraf": "^3.0.2",

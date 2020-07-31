@@ -2724,10 +2724,10 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, can
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/caniuse-lite/-/caniuse-lite-1.0.30001109.tgz#a9f3f26a0c3753b063d7acbb48dfb9c0e46f2b19"
   integrity sha1-qfPyagw3U7Bj16y7SN+5wORvKxk=
 
-canvaskit-wasm@0.16.2:
-  version "0.16.2"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.16.2.tgz#defb8f0b1e6bef2fae6aef1b4c90083dbdf9ee7a"
-  integrity sha1-3vuPCx5r7y+uau8bTJAIPb357no=
+canvaskit-wasm@0.17.2:
+  version "0.17.2"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.17.2.tgz#94c78b508c92a07dc313afae5937138702f0ef4e"
+  integrity sha1-lMeLUIySoH3DE6+uWTcThwLw704=
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -3826,9 +3826,9 @@ ee-first@1.1.1:
   integrity sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
 
 electron-to-chromium@^1.3.378, electron-to-chromium@^1.3.488:
-  version "1.3.515"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/electron-to-chromium/-/electron-to-chromium-1.3.515.tgz#96683d2c2be9bf83f6cca75d504a7b443d763c08"
-  integrity sha1-lmg9LCvpv4P2zKddUEp7RD12PAg=
+  version "1.3.516"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/electron-to-chromium/-/electron-to-chromium-1.3.516.tgz#03ec071b061e462b786bf7e7ce226fd7ab7cf1f6"
+  integrity sha1-A+wHGwYeRit4a/fnziJv16t88fY=
 
 elliptic@^6.0.0, elliptic@^6.5.2:
   version "6.5.3"

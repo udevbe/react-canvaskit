@@ -1,4 +1,5 @@
-import React, { FunctionComponent, useState } from 'react'
+import type { FunctionComponent } from 'react'
+import React from 'react'
 import { FontManagerProvider } from 'react-canvaskit'
 import ParagraphDemo from './ParagraphDemo'
 
@@ -10,7 +11,8 @@ const notoColorEmojiPromise = fetch('https://storage.googleapis.com/skia-cdn/mis
 const fontsPromise = Promise.all([robotoPromise, notoColorEmojiPromise])
 
 export const App: FunctionComponent = () => {
-  const [fonts, setFonts] = useState<ArrayBuffer[] | undefined>(undefined)
+
+  const [fonts, setFonts] = React.useState<ArrayBuffer[] | undefined>(undefined)
   fontsPromise.then(fetchedFonts => setFonts(fetchedFonts))
 
   return (

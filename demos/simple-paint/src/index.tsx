@@ -9,23 +9,15 @@ if (rootElement === null) {
 }
 rootElement.appendChild(htmlCanvasElement)
 document.body.appendChild(htmlCanvasElement)
-htmlCanvasElement.width = 800
-htmlCanvasElement.height = 600
+const width = 400
+const height = 300
+htmlCanvasElement.width = width
+htmlCanvasElement.height = height
 const glRenderingContext = htmlCanvasElement.getContext('webgl')
 if (glRenderingContext === null) {
   alert('Browser does not support WebGL.')
   throw new Error('Browser does not support WebGL.')
 }
 
-const renderContext = {
-  glRenderingContext,
-  width: htmlCanvasElement.width,
-  height: htmlCanvasElement.height
-}
-
-init().then(() => {
-  render(
-    <App/>,
-    renderContext
-  )
-})
+const renderContext = { glRenderingContext, width, height }
+init().then(() => render(<App/>, renderContext))
