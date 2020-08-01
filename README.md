@@ -1,8 +1,8 @@
 # React-CanvasKit
 
-Experimental implementation of [the Skia CanvasKit](https://skia.org/user/modules/canvaskit) using [ReactJS](https://reactjs.org/).
+Experimental implementation of [Skia CanvasKit](https://skia.org/user/modules/canvaskit) using [ReactJS](https://reactjs.org/).
 
-This implementation allows for the usage of all familiar React concepts like hooks and contexts in conjunction with with JXS elements that closely match the existing Skia CanvasKit API. Everything is drawn to a hardware accelerated WebGL canvas.
+This implementation allows you to use all familiar React concepts like hooks and contexts, in conjunction with JXS elements that closely match the existing Skia CanvasKit API. Everything is drawn to a hardware accelerated WebGL canvas.
 
 # Example
 
