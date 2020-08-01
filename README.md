@@ -42,3 +42,8 @@ init().then(() => render(<App/>, htmlCanvasElement))
 
 
 See the `demos` directory for more concrete examples.
+
+# TODO
+
+- Not all API is currently implemented. 
+- Scene redraws are not optimal and might leak memory.
