@@ -256,25 +256,15 @@ const hostConfig: ReactCanvasKitHostConfig = {
 }
 
 const canvaskitReconciler = ReactReconciler(hostConfig)
-// canvaskitReconciler.injectIntoDevTools({
-//   bundleType: 1, // 0 for PROD, 1 for DEV
-//   version: '0.0.1', // version for your renderer
-//   rendererPackageName: 'react-canvaskit' // package name
-// })
-
-export interface RenderTarget {
-  glRenderingContext: WebGLRenderingContext
-  width: number
-  height: number
-}
+canvaskitReconciler.injectIntoDevTools({
+  bundleType: 1, // 0 for PROD, 1 for DEV
+  version: '0.0.1', // version for your renderer
+  rendererPackageName: 'react-canvaskit' // package name
+})
 
 export function render (
   element: ReactNodeList,
-  {
-    glRenderingContext,
-    width,
-    height
-  }: RenderTarget) {
+  canvas: HTMLCanvasElement) {
   if (canvasKit === undefined) {
     throw new Error('Not initialized')
   }
@@ -282,24 +272,12 @@ export function render (
   const isConcurrent = false
   const hydrate = false
 
-  // @ts-ignore
-  const context = canvasKit.GetWebGLContext({
-    getContext () {
-      return glRenderingContext
-    }
-  })
-  // @ts-ignore
-  const grCtx = canvasKit.MakeGrContext(context)
-  // @ts-ignore
-  const skSurface = canvasKit.MakeOnScreenGLSurface(grCtx, width, height, null)
-  if (skSurface === null) {
-    throw new Error('CanvasKit could not create an on-screen gl surface.')
-  }
+  const skSurface = canvasKit.MakeCanvasSurface(canvas)
   // @ts-ignore our root object can't have a parent
   const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
-    props: { width, height },
+    props: { width: canvas.width, height: canvas.height },
     skObjectType: 'SkSurface',
     skObject: skSurface,
     children: [],

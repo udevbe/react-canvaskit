@@ -45,7 +45,15 @@ describe('canvaskit canvas', () => {
           </ck-canvas>
         </ck-surface>
       </ck-canvas>,
-      { glRenderingContext: gl, width, height }
+      // @ts-ignore
+      {
+        tagName: 'CANVAS',
+        getContext () {
+          return gl
+        },
+        width,
+        height
+      }
     )
 
     // TODO auto compare output file to reference image
@@ -61,7 +69,15 @@ describe('canvaskit canvas', () => {
     await ReactCanvasKit.init()
     await ReactCanvasKit.render(
       <App/>,
-      { glRenderingContext: gl, width, height }
+      // @ts-ignore
+      {
+        tagName: 'CANVAS',
+        getContext () {
+          return gl
+        },
+        width,
+        height
+      }
     )
 
     // TODO auto compare output file to reference image

@@ -10,25 +10,25 @@ const paragraphText = 'The quick brown fox 🦊 ate a zesty hamburgerfonts 🍔.
 
 export default () => {
   const skParagraphRef = React.useRef<SkParagraph>(null)
-  // const requestRef = React.useRef<number>()
+  const requestRef = React.useRef<number>()
   const fontManager = useFontManager()
 
   const calcWrapTo = (time: number): number => 350 + 150 * Math.sin(time / 2000)
   const [wrapTo, setWrapTo] = React.useState(calcWrapTo(performance.now()))
 
-  // const animate: FrameRequestCallback = time => {
-  //   setWrapTo(calcWrapTo(time))
-  //   requestRef.current = requestAnimationFrame(animate)
-  // }
+  const animate: FrameRequestCallback = time => {
+    setWrapTo(calcWrapTo(time))
+    requestRef.current = requestAnimationFrame(animate)
+  }
 
-  // React.useEffect(() => {
-  //   requestRef.current = requestAnimationFrame(animate)
-  //   return () => {
-  //     if (requestRef.current) {
-  //       cancelAnimationFrame(requestRef.current)
-  //     }
-  //   }
-  // }, [])
+  React.useEffect(() => {
+    requestRef.current = requestAnimationFrame(animate)
+    return () => {
+      if (requestRef.current) {
+        cancelAnimationFrame(requestRef.current)
+      }
+    }
+  }, [])
 
   const posA = skParagraphRef.current?.getGlyphPositionAtCoordinate(X, Y)
   let glyph
