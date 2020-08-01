@@ -47,3 +47,5 @@ See the `demos` directory for more concrete examples.
 
 - Not all API is currently implemented. 
 - Scene redraws are not optimal and might leak memory.
+- No custom Layouting. We might want to borrow the flexbox layouting used by React-Native?
+- No custom styling. We might wan to borrow the stylesheet implementation of React-Native?
