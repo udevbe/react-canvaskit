@@ -1,7 +1,21 @@
 {
   "name": "react-canvaskit",
   "version": "0.0.1-alpha.1",
-  "description": "A React implementation of the Skia-Canvaskit drawing library.",
+  "description": "A React implementation of the Skia-CanvasKit drawing library.",
+  "keywords": [
+    "react",
+    "reactjs",
+    "skia",
+    "skia-library",
+    "canvas",
+    "webgl",
+    "html5-canvas",
+    "html5",
+    "react-reconciler",
+    "canvaskit",
+    "accelerated",
+    "hardware-acceleration"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "typings": "types/index.d.ts",
