@@ -1571,12 +1571,12 @@
   integrity sha1-FZJUFOCtLNdlv+9YhC9+JqesyyQ=
 
 "@types/react@^16.9.43":
-  version "16.9.43"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/react/-/react-16.9.43.tgz#c287f23f6189666ee3bebc2eb8d0f84bcb6cdb6b"
-  integrity sha1-wofyP2GJZm7jvrwuuND4S8ts22s=
+  version "16.9.44"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/react/-/react-16.9.44.tgz#da84b179c031aef67dc92c33bd3401f1da2fa3bc"
+  integrity sha1-2oSxecAxrvZ9ySwzvTQB8dovo7w=
   dependencies:
     "@types/prop-types" "*"
-    csstype "^2.2.0"
+    csstype "^3.0.2"
 
 "@types/stack-utils@^1.0.1":
   version "1.0.1"
@@ -1795,9 +1795,9 @@
   integrity sha1-0pHGpOl5ibXGHZrPOWrk/hM6cY0=
 
 abab@^2.0.0:
-  version "2.0.3"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/abab/-/abab-2.0.3.tgz#623e2075e02eb2d3f2475e49f99c91846467907a"
-  integrity sha1-Yj4gdeAustPyR15J+ZyRhGRnkHo=
+  version "2.0.4"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/abab/-/abab-2.0.4.tgz#6dfa57b417ca06d21b2478f0e638302f99c2405c"
+  integrity sha1-bfpXtBfKBtIbJHjw5jgwL5nCQFw=
 
 accepts@~1.3.4, accepts@~1.3.5, accepts@~1.3.7:
   version "1.3.7"
@@ -2724,10 +2724,10 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, can
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/caniuse-lite/-/caniuse-lite-1.0.30001109.tgz#a9f3f26a0c3753b063d7acbb48dfb9c0e46f2b19"
   integrity sha1-qfPyagw3U7Bj16y7SN+5wORvKxk=
 
-canvaskit-wasm@0.17.2:
-  version "0.17.2"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.17.2.tgz#94c78b508c92a07dc313afae5937138702f0ef4e"
-  integrity sha1-lMeLUIySoH3DE6+uWTcThwLw704=
+canvaskit-wasm@0.16.2:
+  version "0.16.2"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.16.2.tgz#defb8f0b1e6bef2fae6aef1b4c90083dbdf9ee7a"
+  integrity sha1-3vuPCx5r7y+uau8bTJAIPb357no=
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -3470,10 +3470,10 @@ cssstyle@^1.0.0, cssstyle@^1.1.1:
   dependencies:
     cssom "0.3.x"
 
-csstype@^2.2.0:
-  version "2.6.13"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/csstype/-/csstype-2.6.13.tgz#a6893015b90e84dd6e85d0e3b442a1e84f2dbe0f"
-  integrity sha1-pokwFbkOhN1uhdDjtEKh6E8tvg8=
+csstype@^3.0.2:
+  version "3.0.2"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/csstype/-/csstype-3.0.2.tgz#ee5ff8f208c8cd613b389f7b222c9801ca62b3f7"
+  integrity sha1-7l/48gjIzWE7OJ97IiyYAcpis/c=
 
 cyclist@^1.0.1:
   version "1.0.1"
@@ -7190,9 +7190,9 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
     wrappy "1"
 
 onetime@^5.1.0:
-  version "5.1.0"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/onetime/-/onetime-5.1.0.tgz#fff0f3c91617fe62bb50189636e99ac8a6df7be5"
-  integrity sha1-//DzyRYX/mK7UBiWNumayKbfe+U=
+  version "5.1.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/onetime/-/onetime-5.1.1.tgz#5c8016847b0d67fcedb7eef254751cfcdc7e9418"
+  integrity sha1-XIAWhHsNZ/ztt+7yVHUc/Nx+lBg=
   dependencies:
     mimic-fn "^2.1.0"
 
@@ -8529,8 +8529,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-"react-canvaskit@file:../../react-canvaskit":
-  version "0.0.1"
+react-canvaskit@0.0.1-alpha.0:
+  version "0.0.1-alpha.0"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-canvaskit/-/react-canvaskit-0.0.1-alpha.0.tgz#d3f0c290fe0191aa21b0e00d5e3c19cc952c0ed5"
+  integrity sha1-0/DCkP4BkaohsOANXjwZzJUsDtU=
   dependencies:
     react-reconciler "0.25.1"
 

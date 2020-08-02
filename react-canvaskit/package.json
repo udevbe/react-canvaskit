@@ -73,7 +73,7 @@
   },
   "author": "Erik De Rijcke",
   "homepage": "https://www.greenfield.app",
-  "license": "AGPL-3.0-or-later",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/udevbe/greenfield/tree/master/compositor-module"

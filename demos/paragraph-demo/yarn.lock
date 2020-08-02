@@ -7190,9 +7190,9 @@ once@^1.3.0, once@^1.3.1, once@^1.4.0:
     wrappy "1"
 
 onetime@^5.1.0:
-  version "5.1.0"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/onetime/-/onetime-5.1.0.tgz#fff0f3c91617fe62bb50189636e99ac8a6df7be5"
-  integrity sha1-//DzyRYX/mK7UBiWNumayKbfe+U=
+  version "5.1.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/onetime/-/onetime-5.1.1.tgz#5c8016847b0d67fcedb7eef254751cfcdc7e9418"
+  integrity sha1-XIAWhHsNZ/ztt+7yVHUc/Nx+lBg=
   dependencies:
     mimic-fn "^2.1.0"
 
@@ -8529,8 +8529,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-"react-canvaskit@file:../../react-canvaskit":
-  version "0.0.1"
+react-canvaskit@0.0.1-alpha.0:
+  version "0.0.1-alpha.0"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-canvaskit/-/react-canvaskit-0.0.1-alpha.0.tgz#d3f0c290fe0191aa21b0e00d5e3c19cc952c0ed5"
+  integrity sha1-0/DCkP4BkaohsOANXjwZzJUsDtU=
   dependencies:
     react-reconciler "0.25.1"
 

@@ -6,7 +6,7 @@
     "react": "16.13.1",
     "canvaskit-wasm": "0.16.2",
     "react-scripts": "3.4.1",
-    "react-canvaskit": "file:../../react-canvaskit"
+    "react-canvaskit": "0.0.1-alpha.0"
   },
   "devDependencies": {
     "@types/canvaskit-wasm": "^0.9.0",
