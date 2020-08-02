@@ -72,11 +72,11 @@
     "typescript": "^3.9.6"
   },
   "author": "Erik De Rijcke",
-  "homepage": "https://www.greenfield.app",
+  "homepage": "https://github.com/udevbe/react-canvaskit",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/udevbe/greenfield/tree/master/compositor-module"
+    "url": "https://github.com/udevbe/react-canvaskit"
   },
   "engines": {
     "node": ">=12.0.0"
