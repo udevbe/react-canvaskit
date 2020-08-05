@@ -224,7 +224,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   resetAfterCommit (containerInfo) {
-    // containerInfo.skObject.flush()
+    containerInfo.props.renderCallback?.()
   },
 
   getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): any {
@@ -250,6 +250,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
     internalInstanceHandle,
     keepChildren,
     recyclableInstance): CkElement<any> {
+    // TODO cleanup old element?
     // TODO implement a way where we can check which props require a whole new skobject to be created, or just updated the old one.
     return createCkElement(type, newProps, instance.canvasKit)
   }
@@ -264,7 +265,8 @@ canvaskitReconciler.injectIntoDevTools({
 
 export function render (
   element: ReactNodeList,
-  canvas: HTMLCanvasElement) {
+  canvas: HTMLCanvasElement,
+  renderCallback?: () => void) {
   if (canvasKit === undefined) {
     throw new Error('Not initialized')
   }
@@ -273,11 +275,11 @@ export function render (
   const hydrate = false
 
   const skSurface = canvasKit.MakeCanvasSurface(canvas)
-  // @ts-ignore our root object can't have a parent
   const ckSurfaceElement: CkElementContainer<'ck-surface'> = {
     canvasKit,
     type: 'ck-surface',
-    props: { width: canvas.width, height: canvas.height },
+    // @ts-ignore
+    props: { width: canvas.width, height: canvas.height, renderCallback },
     skObjectType: 'SkSurface',
     skObject: skSurface,
     children: [],
