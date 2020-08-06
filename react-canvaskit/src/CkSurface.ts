@@ -1,6 +1,6 @@
 import { CanvasKit, SkCanvas, SkPaint, SkSurface } from 'canvaskit-wasm'
 import { ReactElement } from 'react'
-import { CkCanvas, CkCanvasProps, isCkCanvas } from './CkCanvas'
+import { CkCanvasProps, isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
 import {
   CkElement,
@@ -41,9 +41,11 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
   }
 
   render (parent: CkElementContainer<any>) {
-    if (this.skObject === undefined && parent.skObject && isCkCanvas(parent)) {
-      const { width, height } = this.props
-      this.skObject = this.canvasKit.MakeSurface(width, height)
+    if (parent.skObject && isCkCanvas(parent)) {
+      if (this.skObject === undefined) {
+        const { width, height } = this.props
+        this.skObject = this.canvasKit.MakeSurface(width, height)
+      }
     } else {
       throw new Error('Expected an initialized ck-canvas as parent of ck-surface')
     }
