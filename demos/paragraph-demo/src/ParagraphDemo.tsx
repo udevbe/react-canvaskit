@@ -1,5 +1,6 @@
-import type { SkParagraph } from 'canvaskit-wasm'
+import type { SkParagraph } from 'canvaskit-oc'
 import React from 'react'
+import type { SkObjectRef } from 'react-canvaskit'
 import { PaintStyle, TextAlignEnum, useFontManager } from 'react-canvaskit'
 
 const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
@@ -9,7 +10,7 @@ const Y = 250
 const paragraphText = 'The quick brown fox 🦊 ate a zesty hamburgerfonts 🍔.\nThe 👩‍👩‍👧‍👧 laughed.'
 
 export default () => {
-  const skParagraphRef = React.useRef<SkParagraph>(null)
+  const skParagraphRef = React.useRef<SkObjectRef<SkParagraph>>(null)
   const requestRef = React.useRef<number>()
   const fontManager = useFontManager()
 
@@ -30,7 +31,8 @@ export default () => {
     }
   }, [])
 
-  const posA = skParagraphRef.current?.getGlyphPositionAtCoordinate(X, Y)
+  // TODO fix
+  const posA = skParagraphRef.current?.ref()?.getGlyphPositionAtCoordinate(X, Y)
   let glyph
   if (posA) {
     const cp = paragraphText.codePointAt(posA.pos)
