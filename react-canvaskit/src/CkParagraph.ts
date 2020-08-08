@@ -49,7 +49,7 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
     if (isCkCanvas(parent)) {
       parent.skObject?.drawParagraph(this.skObject, this.props.x ?? 0, this.props.y ?? 0)
     }
-    // TODO we can avoid deleting & recreating the skobject by checkin props that require a new paragraph instance.
+    // TODO we can avoid deleting & recreating the paragraph skobject by checkin props that require a new paragraph instance.
   }
 
   delete () {

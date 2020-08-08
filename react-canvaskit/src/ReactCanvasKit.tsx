@@ -216,11 +216,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   prepareForCommit (containerInfo) {
-    // TODO instead of re-rendering everything, only rerender dirty nodes
-    containerInfo.children.forEach(child => child.render(containerInfo))
-    // noop?
   },
-
 
   /**
    * This function gets executed after the inmemory tree has been attached to the root dom element. Here we can do any
@@ -230,6 +226,8 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   resetAfterCommit (containerInfo) {
+    // TODO instead of re-rendering everything, only rerender dirty nodes?
+    containerInfo.children.forEach(child => child.render(containerInfo))
     containerInfo.props.renderCallback?.()
   },
 
