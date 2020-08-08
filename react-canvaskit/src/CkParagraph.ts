@@ -1,4 +1,4 @@
-import { CanvasKit, SkFontManager, SkParagraph, SkParagraphStyle } from 'canvaskit-wasm'
+import type { CanvasKit, SkFontManager, SkParagraph, SkParagraphStyle } from 'canvaskit-oc'
 import { isCkCanvas } from './CkCanvas'
 import { toSkParagraphStyle } from './SkiaElementMapping'
 import {
@@ -25,6 +25,8 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
   readonly skObjectType: CkObjectTyping['ck-paragraph']['name'] = 'SkParagraph'
   readonly type: 'ck-paragraph' = 'ck-paragraph'
 
+  deleted = false
+
   constructor (canvasKit: CanvasKit,
                props: CkObjectTyping['ck-paragraph']['props']) {
     this.canvasKit = canvasKit
@@ -32,18 +34,30 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
   }
 
   render (parent: CkElementContainer<any>): void {
-    if (this.skObject === undefined) {
-      const skParagraphBuilder =
-        this.canvasKit.ParagraphBuilder.Make(<SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props), this.props.fontManager ?? this.canvasKit.SkFontMgr.RefDefault())
-      if (this.props.children) {
-        skParagraphBuilder.addText(this.props.children)
-      }
-      this.skObject = skParagraphBuilder.build()
+    if (this.deleted) {
+      throw new Error('BUG. paragraph element deleted.')
     }
+
+    const skParagraphBuilder =
+      this.canvasKit.ParagraphBuilder.Make(<SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props), this.props.fontManager ?? this.canvasKit.SkFontMgr.RefDefault())
+    if (this.props.children) {
+      skParagraphBuilder.addText(this.props.children)
+    }
+    this.skObject?.delete()
+    this.skObject = skParagraphBuilder.build()
+    this.skObject.layout(this.props.layout)
     if (isCkCanvas(parent)) {
-      this.skObject.layout(this.props.layout)
       parent.skObject?.drawParagraph(this.skObject, this.props.x ?? 0, this.props.y ?? 0)
     }
+    // TODO we can avoid deleting & recreating the skobject by checkin props that require a new paragraph instance.
+  }
+
+  delete () {
+    if (this.deleted) {
+      return
+    }
+    this.deleted = true
+    this.skObject?.delete()
   }
 }
 

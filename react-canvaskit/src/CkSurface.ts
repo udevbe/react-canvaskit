@@ -1,6 +1,7 @@
-import { CanvasKit, SkCanvas, SkPaint, SkSurface } from 'canvaskit-wasm'
-import { ReactElement } from 'react'
-import { CkCanvasProps, isCkCanvas } from './CkCanvas'
+import type { CanvasKit, SkCanvas, SkPaint, SkSurface } from 'canvaskit-oc'
+import type { ReactElement } from 'react'
+import type { CkCanvasProps } from './CkCanvas'
+import { isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
 import {
   CkElement,
@@ -29,7 +30,9 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
   readonly type: 'ck-surface' = 'ck-surface'
   children: CkElementContainer<'ck-canvas'>[] = []
 
-  readonly paint: SkPaint
+  readonly defaultPaint: SkPaint
+  private renderPaint?: SkPaint
+  deleted = false
 
   constructor (
     canvasKit: CanvasKit,
@@ -37,10 +40,14 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
   ) {
     this.canvasKit = canvasKit
     this.props = props
-    this.paint = new this.canvasKit.SkPaint()
+    this.defaultPaint = new this.canvasKit.SkPaint()
   }
 
   render (parent: CkElementContainer<any>) {
+    if (this.deleted) {
+      throw new Error('BUG. surface element deleted.')
+    }
+
     if (parent.skObject && isCkCanvas(parent)) {
       if (this.skObject === undefined) {
         const { width, height } = this.props
@@ -57,7 +64,22 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
   private drawSelf (parent: SkCanvas, skSurface: SkSurface) {
     const skImage = skSurface.makeImageSnapshot()
     const { dx, dy, paint } = this.props
-    parent.drawImage(skImage, dx ?? 0, dy ?? 0, toSkPaint(this.canvasKit, paint) ?? this.paint)
+    // TODO we can be smart and only recreate the paint object if the paint props have changed.
+    this.renderPaint?.delete()
+    this.renderPaint = toSkPaint(this.canvasKit, paint)
+    parent.drawImage(skImage, dx ?? 0, dy ?? 0, this.renderPaint ?? this.defaultPaint)
+  }
+
+  delete () {
+    if (this.deleted) {
+      return
+    }
+    this.deleted = true
+    this.defaultPaint.delete()
+    this.renderPaint?.delete()
+    this.renderPaint = undefined
+    this.skObject?.delete()
+    this.skObject = undefined
   }
 }
 

@@ -1,5 +1,5 @@
-import { CanvasKit, SkCanvas, SkFont, SkPaint } from 'canvaskit-wasm'
-import { ReactNode } from 'react'
+import type { CanvasKit, SkCanvas } from 'canvaskit-oc'
+import type { ReactNode } from 'react'
 import { isCkSurface } from './CkSurface'
 import { toSkColor } from './SkiaElementMapping'
 import {
@@ -27,8 +27,7 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
   readonly type: 'ck-canvas' = 'ck-canvas'
   children: CkCanvasChild[] = []
 
-  private readonly fontPaint: SkPaint
-  private readonly font: SkFont
+  private deleted = false
 
   constructor (
     canvasKit: CanvasKit,
@@ -36,15 +35,13 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
   ) {
     this.canvasKit = canvasKit
     this.props = props
-
-    this.fontPaint = new this.canvasKit.SkPaint()
-    this.fontPaint.setStyle(this.canvasKit.PaintStyle.Fill)
-    this.fontPaint.setAntiAlias(true)
-
-    this.font = new this.canvasKit.SkFont(null, 14)
   }
 
   render (parent: CkElementContainer<any>): void {
+    if (this.deleted) {
+      throw new Error('BUG. canvas element deleted.')
+    }
+
     if (parent.skObject && isCkSurface(parent)) {
       if (this.skObject === undefined) {
         this.skObject = parent.skObject.getCanvas()
@@ -70,6 +67,16 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
       const { degree, px, py } = this.props.rotate
       skCanvas.rotate(degree, px ?? 0, py ?? 0)
     }
+  }
+
+  delete () {
+    if (this.deleted) {
+      return
+    }
+    this.deleted = true
+    // The canvas object is 1-to-1 linked to the parent surface object, so deleting it means we could never recreate it.
+    // this.skObject?.delete()
+    this.skObject = undefined
   }
 }
 

@@ -1,4 +1,4 @@
-import { CanvasKit, SkFont, SkPaint } from 'canvaskit-wasm'
+import type { CanvasKit, SkFont, SkPaint } from 'canvaskit-oc'
 import { isCkCanvas } from './CkCanvas'
 import { toSkFont, toSkPaint } from './SkiaElementMapping'
 import {
@@ -22,12 +22,15 @@ export interface CkTextProps extends CkElementProps<never> {
 class CkText implements CkElement<'ck-text'> {
   readonly canvasKit: CanvasKit
   readonly props: CkObjectTyping['ck-text']['props']
-  readonly skObject: CkObjectTyping['ck-text']['type']
   readonly skObjectType: CkObjectTyping['ck-text']['name'] = 'Text'
   readonly type: 'ck-text' = 'ck-text'
 
-  private readonly paint: SkPaint
-  private readonly font: SkFont
+  private readonly defaultPaint: SkPaint
+  private readonly defaultFont: SkFont
+
+  private renderPaint?: SkPaint
+  private renderFont?: SkFont
+  deleted = false
 
   constructor (
     canvasKit: CanvasKit,
@@ -36,19 +39,34 @@ class CkText implements CkElement<'ck-text'> {
     this.canvasKit = canvasKit
     this.props = props
 
-    this.paint = new this.canvasKit.SkPaint()
-    this.paint.setStyle(this.canvasKit.PaintStyle.Fill)
-    this.paint.setAntiAlias(true)
+    this.defaultPaint = new this.canvasKit.SkPaint()
+    this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
+    this.defaultPaint.setAntiAlias(true)
 
-    this.font = new this.canvasKit.SkFont(null, 14)
+    this.defaultFont = new this.canvasKit.SkFont(null, 14)
   }
 
   render (parent?: CkElementContainer<any>): void {
     if (parent && isCkCanvas(parent)) {
-      const skPaint = toSkPaint(this.canvasKit, this.props.paint)
-      const skFont = toSkFont(this.canvasKit, this.props.font)
-      parent.skObject?.drawText(this.props.children, this.props.x ?? 0, this.props.y ?? 0, skPaint ?? this.paint, skFont ?? this.font)
+      // TODO we can be smart and only recreate the paint object if the paint props have changed.
+      this.renderPaint?.delete()
+      this.renderPaint = toSkPaint(this.canvasKit, this.props.paint)
+      // TODO we can be smart and only recreate the font object if the font props have changed.
+      this.renderFont?.delete()
+      this.renderFont = toSkFont(this.canvasKit, this.props.font)
+      parent.skObject?.drawText(this.props.children, this.props.x ?? 0, this.props.y ?? 0, this.renderPaint ?? this.defaultPaint, this.renderFont ?? this.defaultFont)
     }
+  }
+
+  delete () {
+    if (this.deleted) {
+      return
+    }
+    this.deleted = true
+    this.defaultFont.delete()
+    this.defaultPaint.delete()
+    this.renderPaint?.delete()
+    this.renderFont?.delete()
   }
 }
 

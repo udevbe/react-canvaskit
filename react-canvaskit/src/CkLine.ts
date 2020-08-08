@@ -1,4 +1,4 @@
-import { CanvasKit, SkPaint } from 'canvaskit-wasm'
+import type { CanvasKit, SkPaint } from 'canvaskit-oc'
 import { isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
 import {
@@ -10,7 +10,7 @@ import {
   Paint
 } from './SkiaElementTypes'
 
-export interface CkLineProps extends CkElementProps<never>{
+export interface CkLineProps extends CkElementProps<never> {
   x1: number
   y1: number
   x2: number
@@ -24,7 +24,9 @@ class CkLine implements CkElement<'ck-line'> {
   readonly skObjectType: CkObjectTyping['ck-line']['name'] = 'Line'
   readonly type: 'ck-line' = 'ck-line'
 
-  private readonly paint: SkPaint
+  private readonly defaultPaint: SkPaint
+  private renderPaint?: SkPaint
+  deleted = false
 
   constructor (
     canvasKit: CanvasKit,
@@ -33,15 +35,30 @@ class CkLine implements CkElement<'ck-line'> {
     this.canvasKit = canvasKit
     this.props = props
 
-    this.paint = new this.canvasKit.SkPaint()
-    this.paint.setStyle(this.canvasKit.PaintStyle.Fill)
-    this.paint.setAntiAlias(true)
+    this.defaultPaint = new this.canvasKit.SkPaint()
+    this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
+    this.defaultPaint.setAntiAlias(true)
   }
 
   render (parent: CkElementContainer<any>): void {
-    if (parent && isCkCanvas(parent)) {
-      parent.skObject?.drawLine(this.props.x1, this.props.y1, this.props.x2, this.props.y2, toSkPaint(this.canvasKit, this.props.paint) ?? this.paint)
+    if (this.deleted) {
+      throw new Error('BUG. line element deleted.')
     }
+    if (parent && isCkCanvas(parent)) {
+      // TODO we can be smart and only recreate the paint object if the paint props have changed.
+      this.renderPaint?.delete()
+      this.renderPaint = toSkPaint(this.canvasKit, this.props.paint)
+      parent.skObject?.drawLine(this.props.x1, this.props.y1, this.props.x2, this.props.y2, this.renderPaint ?? this.defaultPaint)
+    }
+  }
+
+  delete () {
+    if (this.deleted) {
+      return
+    }
+    this.deleted = true
+    this.defaultPaint.delete()
+    this.renderPaint?.delete()
   }
 }
 

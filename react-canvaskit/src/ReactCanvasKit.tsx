@@ -1,5 +1,5 @@
-import type { CanvasKit, SkFontManager } from 'canvaskit-wasm'
-import * as CanvasKitInit from 'canvaskit-wasm'
+import type { CanvasKit, SkFontManager, SkObject } from 'canvaskit-oc'
+import { init as canvasKitInit } from 'canvaskit-oc'
 import type { FunctionComponent, ReactNode } from 'react'
 import * as React from 'react'
 import type { HostConfig, ReactNodeList } from 'react-reconciler'
@@ -13,10 +13,7 @@ import {
   isContainerElement
 } from './SkiaElementTypes'
 
-// @ts-ignore
-const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
-  locateFile: (file: string) => `https://unpkg.com/canvaskit-wasm@0.16.2/bin/${file}`
-})
+const canvasKitPromise: Promise<CanvasKit> = canvasKitInit()
 let canvasKit: CanvasKit | undefined
 
 let CanvasKitContext: React.Context<CanvasKit>
@@ -50,13 +47,17 @@ type ContainerContext = {
   ckElement: CkElement<any>
 }
 
+export interface SkObjectRef<T extends SkObject<any> | undefined | never> {
+  ref (): T
+}
+
 interface ReactCanvasKitHostConfig extends HostConfig<CkElementType,
   CkElementProps<any>,
   CkElementContainer<any>,
   CkElement<any>,
   CkElement<'ck-text'> | CkElement<'ck-paragraph'>,
   any,
-  any,
+  SkObjectRef<any>,
   ContainerContext,
   any,
   CkElement<any>[],
@@ -75,7 +76,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
   supportsHydration: false,
 
   createContainerChildSet (container: CkElementContainer<any>): CkElement<any>[] {
-    return [...container.children]
+    return []
   },
   /**
    * Attaches new children to the set returned by createContainerChildSet
@@ -86,6 +87,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
     childSet.push(child)
   },
   replaceContainerChildren (container, newChildren) {
+    container.children.forEach(child => child.delete())
     container.children = newChildren
   },
   /**
@@ -203,8 +205,8 @@ const hostConfig: ReactCanvasKitHostConfig = {
     return false
   },
   finalizeContainerChildren (container, newChildren) {
-    newChildren.forEach(newChild => newChild.render(container))
   },
+
   /**
    * This function is called when we have made a in-memory render tree of all the views (Remember we are yet to attach
    * it the the actual root dom node). Here we can do any preparation that needs to be done on the rootContainer before
@@ -214,8 +216,12 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
   prepareForCommit (containerInfo) {
+    // TODO instead of re-rendering everything, only rerender dirty nodes
+    containerInfo.children.forEach(child => child.render(containerInfo))
     // noop?
   },
+
+
   /**
    * This function gets executed after the inmemory tree has been attached to the root dom element. Here we can do any
    * post attach operations that needs to be done. For example: react-dom re-enabled events which were temporarily
@@ -227,8 +233,8 @@ const hostConfig: ReactCanvasKitHostConfig = {
     containerInfo.props.renderCallback?.()
   },
 
-  getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): any {
-    return instance.skObject
+  getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): SkObjectRef<any> {
+    return { ref: () => instance.skObject }
   },
 
   prepareUpdate (
@@ -238,7 +244,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
     newProps,
     rootContainerInstance,
     hostContext) {
-    // TODO
+    // TODO check & return if we can need to create an entire new object or we can reuse the underlying skobject and use it as the payload in cloneInstance.
   },
 
   cloneInstance (
@@ -250,9 +256,15 @@ const hostConfig: ReactCanvasKitHostConfig = {
     internalInstanceHandle,
     keepChildren,
     recyclableInstance): CkElement<any> {
-    // TODO cleanup old element?
-    // TODO implement a way where we can check which props require a whole new skobject to be created, or just updated the old one.
-    return createCkElement(type, newProps, instance.canvasKit)
+    // TODO implement a way where we can create a new instance and reuse the underlying canvaskit objects where possible
+
+    const ckElement = createCkElement(type, newProps, instance.canvasKit)
+    if (keepChildren && isContainerElement(ckElement) && isContainerElement(instance)) {
+      ckElement.children = instance.children
+    }
+    // recyclableInstance.props = newProps
+    // return recyclableInstance
+    return ckElement
   }
 }
 

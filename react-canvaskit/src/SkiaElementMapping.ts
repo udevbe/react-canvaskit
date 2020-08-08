@@ -1,4 +1,4 @@
-import {
+import type {
   CanvasKit,
   FontStyle,
   SkColor,
@@ -7,19 +7,9 @@ import {
   SkParagraphStyle,
   SkTextStyle,
   SkTypeface
-} from 'canvaskit-wasm'
-import {
-  CkFontStyle,
-  Color,
-  Font,
-  FontSlantEnum,
-  FontWeightEnum,
-  FontWidthEnum,
-  Paint,
-  ParagraphStyle,
-  TextStyle,
-  TypeFace
-} from './SkiaElementTypes'
+} from 'canvaskit-oc'
+import type { CkFontStyle, Color, Font, Paint, ParagraphStyle, TextStyle, TypeFace } from './SkiaElementTypes'
+import { FontSlantEnum, FontWeightEnum, FontWidthEnum } from './SkiaElementTypes'
 
 export interface PropsConverter<IN, OUT> {
   (canvasKit: CanvasKit, propIn?: IN): OUT | undefined

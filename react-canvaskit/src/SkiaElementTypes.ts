@@ -1,13 +1,19 @@
-import type { CanvasKit, SkCanvas, SkObject, SkParagraph, SkSurface } from 'canvaskit-wasm'
-import { RefObject } from 'react'
-import { CkCanvasProps, createCkCanvas } from './CkCanvas'
-import { CkLineProps, createCkLine } from './CkLine'
-import { CkParagraphProps, createCkParagraph } from './CkParagraph'
-import { CkSurfaceProps, createCkSurface } from './CkSurface'
-import { CkTextProps, createCkText } from './CkText'
+import type { CanvasKit, SkCanvas, SkObject, SkParagraph, SkSurface } from 'canvaskit-oc'
+import type { RefObject } from 'react'
+import type { CkCanvasProps } from './CkCanvas'
+import { createCkCanvas } from './CkCanvas'
+import type { CkLineProps } from './CkLine'
+import { createCkLine } from './CkLine'
+import type { CkParagraphProps } from './CkParagraph'
+import { createCkParagraph } from './CkParagraph'
+import type { CkSurfaceProps } from './CkSurface'
+import { createCkSurface } from './CkSurface'
+import type { CkTextProps } from './CkText'
+import { createCkText } from './CkText'
+import type { SkObjectRef } from './ReactCanvasKit'
 
-export type CkElementProps<T> = {
-  ref?: RefObject<T>
+export type CkElementProps<T extends SkObject<any> | never> = {
+  ref?: RefObject<SkObjectRef<T>>
 }
 
 export interface CkObjectTyping {
@@ -23,11 +29,13 @@ export type CkElementType = keyof CkObjectTyping
 export interface CkElement<TypeName extends keyof CkObjectTyping> {
   readonly canvasKit: CanvasKit,
   readonly type: TypeName
-  readonly props: CkObjectTyping[TypeName]['props']
+  props: CkObjectTyping[TypeName]['props']
   readonly skObjectType: CkObjectTyping[TypeName]['name']
   skObject?: CkObjectTyping[TypeName]['type']
 
   render (parent: CkElementContainer<any>): void
+
+  delete (): void
 }
 
 export interface CkElementCreator<TypeName extends keyof CkObjectTyping> {
