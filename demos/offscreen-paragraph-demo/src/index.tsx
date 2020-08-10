@@ -8,7 +8,7 @@ if (rootElement === null) {
   throw new Error('No root element defined.')
 }
 rootElement.appendChild(htmlCanvasElement)
-document.body.appendChild(htmlCanvasElement)
+document.body.appendChild(rootElement)
 htmlCanvasElement.width = 800
 htmlCanvasElement.height = 600
 
