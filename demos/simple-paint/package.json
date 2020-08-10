@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "canvaskit-oc": "0.0.1-alpha.0",
+    "canvaskit-oc": "0.0.1-alpha.1",
     "react": "16.13.1",
-    "react-canvaskit": "0.0.1-alpha.6",
+    "react-canvaskit": "0.0.1-alpha.7",
     "react-scripts": "3.4.1"
   },
   "devDependencies": {
