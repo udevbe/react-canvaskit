@@ -6,7 +6,9 @@ Experimental implementation of [Skia CanvasKit](https://skia.org/user/modules/ca
 
 This implementation allows you to use all familiar React concepts like hooks and contexts, in conjunction with JXS elements that closely match the existing Skia CanvasKit API. Everything is drawn to a hardware accelerated WebGL canvas.
 
-# Example
+#Examples
+#### Simple Paint 
+![Alt text](/demos/simple-paint/hello-react-canvaskit.png?raw=true "Hello React-CanvasKit!")
 
 ```typescript jsx
 const App: FunctionComponent = () => {
@@ -39,15 +41,78 @@ htmlCanvasElement.height = 300
 init().then(() => render(<App/>, htmlCanvasElement))
 ```
 
+#### Paragraph with dynamic font loading
+![Alt text](/demos/paragraph-demo/paragraph-demo.gif?raw=true "Paragraph Demo")
 
-![Alt text](/demos/simple-paint/hello-react-canvaskit.png?raw=true "Hello React-CanvasKit!")
+```typescript jsx
+import type { FunctionComponent } from 'react'
+import React from 'react'
+import { FontManagerProvider } from 'react-canvaskit'
+import ParagraphDemo from './ParagraphDemo'
 
+const robotoPromise = fetch('https://storage.googleapis.com/skia-cdn/google-web-fonts/Roboto-Regular.ttf')
+  .then((resp) => resp.arrayBuffer())
+const notoColorEmojiPromise = fetch('https://storage.googleapis.com/skia-cdn/misc/NotoColorEmoji.ttf')
+  .then((resp) => resp.arrayBuffer())
 
-See the `demos` directory for more concrete examples.
+const fontsPromise = Promise.all([robotoPromise, notoColorEmojiPromise])
 
-# TODO
+export const App: FunctionComponent = () => {
+  const [fonts, setFonts] = React.useState<ArrayBuffer[] | undefined>(undefined)
+  fontsPromise.then(fetchedFonts => setFonts(fetchedFonts))
 
-- Not all API is currently implemented. 
-- Scene redraws are not optimal and might leak memory.
-- No custom Layouting. We might want to borrow the flexbox layouting used by React-Native?
-- No custom styling. We might wan to borrow the stylesheet implementation of React-Native?
+  return (
+    <FontManagerProvider fontData={fonts}>
+      <ParagraphDemo/>
+    </FontManagerProvider>
+  )
+}
+```
+
+```typescript jsx
+import type { SkParagraph } from 'canvaskit-oc'
+import React from 'react'
+import type { SkObjectRef } from 'react-canvaskit'
+import { PaintStyle, TextAlignEnum, useFontManager } from 'react-canvaskit'
+import useAnimationFrame from './useAnimationFrame'
+
+const fontPaint = { style: PaintStyle.Fill, antiAlias: true }
+
+const X = 250
+const Y = 250
+const paragraphText = 'The quick brown fox 🦊 ate a zesty hamburgerfonts 🍔.\nThe 👩‍👩‍👧‍👧 laughed.'
+
+export default () => {
+  const skParagraphRef = React.useRef<SkObjectRef<SkParagraph>>(null)
+  const fontManager = useFontManager()
+
+  const calcWrapTo = (time: number): number => 350 + 150 * Math.sin(time / 2000)
+  const [wrapTo, setWrapTo] = React.useState(calcWrapTo(performance.now()))
+
+  useAnimationFrame(time => setWrapTo(calcWrapTo(time)))
+
+  return (
+    <ck-canvas clear='#FFFFFF'>
+      <ck-paragraph
+        fontManager={fontManager}
+        ref={skParagraphRef}
+        textStyle={{
+          color: '#000000',
+          // Noto Mono is the default canvaskit font, we use it as a fallback
+          fontFamilies: ['Noto Mono', 'Roboto', 'Noto Color Emoji'],
+          fontSize: 50
+        }}
+        textAlign={TextAlignEnum.Left}
+        maxLines={7}
+        ellipsis='...'
+        layout={wrapTo}
+      >
+        {paragraphText}
+      </ck-paragraph>
+      <ck-line x1={wrapTo} y1={0} x2={wrapTo} y2={400} paint={fontPaint}/>
+      <ck-text x={5} y={450}
+               paint={fontPaint}>{`At (${X.toFixed(2)}, ${Y.toFixed(2)}) glyph is '${glyph}'`}</ck-text>
+    </ck-canvas>
+  )
+}
+```
