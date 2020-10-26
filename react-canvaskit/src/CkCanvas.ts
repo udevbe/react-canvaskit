@@ -1,4 +1,4 @@
-import type { CanvasKit, SkCanvas } from 'canvaskit-oc'
+import type { CanvasKit, Canvas as SkCanvas } from 'canvaskit-wasm'
 import type { ReactNode } from 'react'
 import { isCkSurface } from './CkSurface'
 import { toSkColor } from './SkiaElementMapping'
@@ -54,7 +54,6 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
     this.drawSelf(this.skObject)
     this.children.forEach(child => child.render(this))
     this.skObject.restore()
-    this.skObject.flush()
   }
 
   private drawSelf (skCanvas: SkCanvas) {

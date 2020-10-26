@@ -1,4 +1,4 @@
-import type { CanvasKit, SkCanvas, SkPaint, SkSurface } from 'canvaskit-oc'
+import type { Canvas as SkCanvas, CanvasKit, Paint as SkPaint, Surface as SkSurface } from 'canvaskit-wasm'
 import type { ReactElement } from 'react'
 import type { CkCanvasProps } from './CkCanvas'
 import { isCkCanvas } from './CkCanvas'
@@ -40,7 +40,7 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
   ) {
     this.canvasKit = canvasKit
     this.props = props
-    this.defaultPaint = new this.canvasKit.SkPaint()
+    this.defaultPaint = new this.canvasKit.Paint()
   }
 
   render (parent: CkElementContainer<any>) {
@@ -51,7 +51,10 @@ export class CkSurface implements CkElementContainer<'ck-surface'> {
     if (parent.skObject && isCkCanvas(parent)) {
       if (this.skObject === undefined) {
         const { width, height } = this.props
-        this.skObject = this.canvasKit.MakeSurface(width, height)
+        this.skObject = this.canvasKit.MakeSurface(width, height) ?? undefined
+        if (this.skObject === undefined) {
+          throw new Error('Failed to create a cpu backed skia surface.')
+        }
       }
     } else {
       throw new Error('Expected an initialized ck-canvas as parent of ck-surface')

@@ -47,7 +47,6 @@ describe('canvaskit canvas', () => {
       </ck-canvas>,
       // @ts-ignore
       {
-        tagName: 'CANVAS',
         getContext () {
           return gl
         },
@@ -71,7 +70,6 @@ describe('canvaskit canvas', () => {
       <App/>,
       // @ts-ignore
       {
-        tagName: 'CANVAS',
         getContext () {
           return gl
         },

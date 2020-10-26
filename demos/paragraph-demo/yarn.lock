@@ -2719,10 +2719,10 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, can
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001112.tgz#0fffc3b934ff56ff0548c37bc9dad7d882bcf672"
   integrity sha512-J05RTQlqsatidif/38aN3PGULCLrg8OYQOlJUKbeYVzC2mGZkZLIztwRlB3MtrfLmawUmjFlNJvy/uhwniIe1Q==
 
-canvaskit-oc@0.0.1-alpha.0:
-  version "0.0.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/canvaskit-oc/-/canvaskit-oc-0.0.1-alpha.0.tgz#bc74c55afa68cbe90e8c985cbd4f5efc44fe33ae"
-  integrity sha512-rEoEU/NH46O48TjbohN9GkjFbs3D7UakUwjSJ/IILt1bYeBrkYA9rb+7aYISCGqINeN36yUI7mRCUVmkDx8X4g==
+canvaskit-oc@0.0.1-alpha.1:
+  version "0.0.1-alpha.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-oc/-/canvaskit-oc-0.0.1-alpha.1.tgz#283ffaca30021b802551b92e88cf7b0fc11bbf37"
+  integrity sha1-KD/6yjACG4AlUbkuiM97D8Ebvzc=
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -8524,10 +8524,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-canvaskit@0.0.1-alpha.6:
-  version "0.0.1-alpha.6"
-  resolved "https://registry.yarnpkg.com/react-canvaskit/-/react-canvaskit-0.0.1-alpha.6.tgz#33a5c972c4785e9c2fff8b70643075bf5a3eb49f"
-  integrity sha512-zqYl9WZ3AgY4vjq33wCzmE9n3i0femkFODcMTrL7+XQp6Ioemx+HiUFbRrP5gNnogZRuR9CqATcQ4YKAwe7mTw==
+react-canvaskit@0.0.1-alpha.7:
+  version "0.0.1-alpha.7"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/react-canvaskit/-/react-canvaskit-0.0.1-alpha.7.tgz#2825ba68d432d817434dbaae0c7c9b2a185da60c"
+  integrity sha1-KCW6aNQy2BdDTbquDHybKhhdpgw=
   dependencies:
     react-reconciler "0.25.1"
 

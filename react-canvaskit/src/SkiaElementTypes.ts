@@ -1,5 +1,5 @@
-import type { CanvasKit, SkCanvas, SkObject, SkParagraph, SkSurface } from 'canvaskit-oc'
-import type { RefObject } from 'react'
+import type { Canvas as SkCanvas, CanvasKit, Paragraph as SkParagraph, Surface as SkSurface } from 'canvaskit-wasm'
+import type { MutableRefObject } from 'react'
 import type { CkCanvasProps } from './CkCanvas'
 import { createCkCanvas } from './CkCanvas'
 import type { CkLineProps } from './CkLine'
@@ -10,10 +10,9 @@ import type { CkSurfaceProps } from './CkSurface'
 import { createCkSurface } from './CkSurface'
 import type { CkTextProps } from './CkText'
 import { createCkText } from './CkText'
-import type { SkObjectRef } from './ReactCanvasKit'
 
-export type CkElementProps<T extends SkObject<any> | never> = {
-  ref?: RefObject<SkObjectRef<T>>
+export type CkElementProps<T> = {
+  ref?: MutableRefObject<T | null | undefined>
 }
 
 export interface CkObjectTyping {
@@ -366,7 +365,7 @@ export enum FontWidthEnum {
 }
 
 export interface TypeFace {
-  data: number[] | ArrayBuffer | Uint8Array
+  data: ArrayBuffer
 }
 
 export interface Font {

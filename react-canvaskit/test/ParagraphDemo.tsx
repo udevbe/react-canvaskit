@@ -1,4 +1,4 @@
-import type { SkParagraph } from 'canvaskit-wasm'
+import type { Paragraph as SkParagraph } from 'canvaskit-wasm'
 import { performance } from 'perf_hooks'
 import * as React from 'react'
 import { PaintStyle, TextAlignEnum, useFontManager } from '../src'
@@ -10,7 +10,7 @@ const Y = 250
 const paragraphText = 'The quick brown fox 🦊 ate a zesty hamburgerfonts 🍔.\nThe 👩‍👩‍👧‍👧 laughed.'
 
 export default () => {
-  const skParagraphRef = React.useRef<SkParagraph>(null)
+  const skParagraphRef = React.useRef<SkParagraph | null>(null)
   // const requestRef = React.useRef<number>()
   const fontManager = useFontManager()
 

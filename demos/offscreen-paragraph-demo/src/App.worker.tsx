@@ -19,7 +19,7 @@ const App: FunctionComponent = () => {
   )
 }
 
-self.onmessage = async (e: MessageEvent) => {
+onmessage = async (e: MessageEvent) => {
   const offscreenCanvas = e.data.canvas
   await init()
   render(<App/>, offscreenCanvas)

@@ -1,4 +1,4 @@
-import type { CanvasKit, SkFont, SkPaint } from 'canvaskit-oc'
+import type { CanvasKit, Font as SkFont, Paint as SkPaint } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkFont, toSkPaint } from './SkiaElementMapping'
 import {
@@ -39,11 +39,11 @@ class CkText implements CkElement<'ck-text'> {
     this.canvasKit = canvasKit
     this.props = props
 
-    this.defaultPaint = new this.canvasKit.SkPaint()
+    this.defaultPaint = new this.canvasKit.Paint()
     this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
     this.defaultPaint.setAntiAlias(true)
 
-    this.defaultFont = new this.canvasKit.SkFont(null, 14)
+    this.defaultFont = new this.canvasKit.Font(null, 14)
   }
 
   render (parent?: CkElementContainer<any>): void {

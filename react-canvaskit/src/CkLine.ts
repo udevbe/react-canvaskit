@@ -1,4 +1,4 @@
-import type { CanvasKit, SkPaint } from 'canvaskit-oc'
+import type { CanvasKit, Paint as SkPaint } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
 import {
@@ -35,7 +35,7 @@ class CkLine implements CkElement<'ck-line'> {
     this.canvasKit = canvasKit
     this.props = props
 
-    this.defaultPaint = new this.canvasKit.SkPaint()
+    this.defaultPaint = new this.canvasKit.Paint()
     this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
     this.defaultPaint.setAntiAlias(true)
   }

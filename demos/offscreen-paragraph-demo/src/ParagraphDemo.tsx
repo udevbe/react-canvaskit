@@ -1,6 +1,5 @@
-import type { SkParagraph } from 'canvaskit-oc'
+import type { Paragraph as SkParagraph } from 'canvaskit-wasm'
 import React from 'react'
-import type { SkObjectRef } from 'react-canvaskit'
 import { PaintStyle, TextAlignEnum, useFontManager } from 'react-canvaskit'
 import useAnimationFrame from './useAnimationFrame'
 
@@ -11,7 +10,7 @@ const Y = 250
 const paragraphText = 'The quick brown fox 🦊 ate a zesty hamburgerfonts 🍔.\nThe 👩‍👩‍👧‍👧 laughed.'
 
 export default () => {
-  const skParagraphRef = React.useRef<SkObjectRef<SkParagraph>>(null)
+  const skParagraphRef = React.useRef<SkParagraph|null>(null)
   const fontManager = useFontManager()
 
   const calcWrapTo = (time: number): number => 350 + 150 * Math.sin(time / 2000)
@@ -19,7 +18,7 @@ export default () => {
 
   useAnimationFrame(time => setWrapTo(calcWrapTo(time)))
 
-  const posA = skParagraphRef.current?.ref()?.getGlyphPositionAtCoordinate(X, Y)
+  const posA = skParagraphRef.current?.getGlyphPositionAtCoordinate(X, Y)
   let glyph
   if (posA) {
     const cp = paragraphText.codePointAt(posA.pos)

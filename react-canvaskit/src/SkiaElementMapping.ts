@@ -1,13 +1,13 @@
 import type {
   CanvasKit,
+  Color as SkColor,
+  Font as SkFont,
   FontStyle,
-  SkColor,
-  SkFont,
-  SkPaint,
-  SkParagraphStyle,
-  SkTextStyle,
-  SkTypeface
-} from 'canvaskit-oc'
+  Paint as SkPaint,
+  ParagraphStyle as SkParagraphStyle,
+  TextStyle as SkTextStyle,
+  Typeface as SkTypeface
+} from 'canvaskit-wasm'
 import type { CkFontStyle, Color, Font, Paint, ParagraphStyle, TextStyle, TypeFace } from './SkiaElementTypes'
 import { FontSlantEnum, FontWeightEnum, FontWidthEnum } from './SkiaElementTypes'
 
@@ -15,8 +15,8 @@ export interface PropsConverter<IN, OUT> {
   (canvasKit: CanvasKit, propIn?: IN): OUT | undefined
 }
 
-export const toSkTypeFace: PropsConverter<TypeFace, SkTypeface> = (canvasKit, typeFace) => typeFace ? canvasKit.SkFontMgr.RefDefault().MakeTypefaceFromData(typeFace.data) : undefined
-export const toSkFont: PropsConverter<Font, SkFont> = (canvasKit, font) => font ? new canvasKit.SkFont(font.typeFace === undefined ? null : toSkTypeFace(canvasKit, font.typeFace)!!, font.size) : undefined
+export const toSkTypeFace: PropsConverter<TypeFace, SkTypeface> = (canvasKit, typeFace) => typeFace ? canvasKit.FontMgr.RefDefault().makeTypefaceFromData(typeFace.data) : undefined
+export const toSkFont: PropsConverter<Font, SkFont> = (canvasKit, font) => font ? new canvasKit.Font(font.typeFace === undefined ? null : toSkTypeFace(canvasKit, font.typeFace)!!, font.size) : undefined
 export const toSkColor: PropsConverter<Color | string, SkColor> = (canvasKit, color) => {
   if (typeof color === 'string') {
     // @ts-ignore
@@ -31,7 +31,7 @@ export const toSkPaint: PropsConverter<Paint, SkPaint> = (canvasKit, paint) => {
     return undefined
   }
 
-  const skPaint = new canvasKit.SkPaint()
+  const skPaint = new canvasKit.Paint()
 
   // TODO blendMode?: BlendMode;
 
