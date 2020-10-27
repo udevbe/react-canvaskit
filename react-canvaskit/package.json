@@ -71,7 +71,6 @@
     "lint-staged": "^10.5.0",
     "prettier": "^2.1.2",
     "prompt": "^1.0.0",
-    "react": "17.0.1",
     "react-devtools": "^4.9.0",
     "replace-in-file": "^6.1.0",
     "rimraf": "^3.0.2",

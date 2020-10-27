@@ -1026,10 +1026,10 @@
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@csstools/normalize.css/-/normalize.css-10.1.0.tgz#f0950bba18819512d42f7197e56c518aa491cf18"
   integrity sha1-8JULuhiBlRLUL3GX5WxRiqSRzxg=
 
-"@eslint/eslintrc@^0.2.0":
-  version "0.2.0"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@eslint/eslintrc/-/eslintrc-0.2.0.tgz#bc7e3c4304d4c8720968ccaee793087dfb5fe6b4"
-  integrity sha1-vH48QwTUyHIJaMyu55MIfftf5rQ=
+"@eslint/eslintrc@^0.2.1":
+  version "0.2.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@eslint/eslintrc/-/eslintrc-0.2.1.tgz#f72069c330461a06684d119384435e12a5d76e3c"
+  integrity sha1-9yBpwzBGGgZoTRGThENeEqXXbjw=
   dependencies:
     ajv "^6.12.4"
     debug "^4.1.1"
@@ -1313,14 +1313,14 @@
     resolve "^1.14.2"
 
 "@rollup/plugin-replace@^2.3.1":
-  version "2.3.3"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@rollup/plugin-replace/-/plugin-replace-2.3.3.tgz#cd6bae39444de119f5d905322b91ebd4078562e7"
-  integrity sha1-zWuuOURN4Rn12QUyK5Hr1AeFYuc=
+  version "2.3.4"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@rollup/plugin-replace/-/plugin-replace-2.3.4.tgz#7dd84c17755d62b509577f2db37eb524d7ca88ca"
+  integrity sha1-fdhMF3VdYrUJV38ts361JNfKiMo=
   dependencies:
-    "@rollup/pluginutils" "^3.0.8"
-    magic-string "^0.25.5"
+    "@rollup/pluginutils" "^3.1.0"
+    magic-string "^0.25.7"
 
-"@rollup/pluginutils@^3.0.8":
+"@rollup/pluginutils@^3.0.8", "@rollup/pluginutils@^3.1.0":
   version "3.1.0"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@rollup/pluginutils/-/pluginutils-3.1.0.tgz#706b4524ee6dc8b103b3c995533e5ad680c02b9b"
   integrity sha1-cGtFJO5tyLEDs8mVUz5a1oDAK5s=
@@ -1565,9 +1565,9 @@
   integrity sha1-PcoOPzOyAPx9ETnAzZbBJoyt/Z0=
 
 "@types/node@*":
-  version "14.14.3"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/node/-/node-14.14.3.tgz#e1c09064121f894baaad2bd9f12ce4a41bffb274"
-  integrity sha1-4cCQZBIfiUuqrSvZ8SzkpBv/snQ=
+  version "14.14.5"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/node/-/node-14.14.5.tgz#e92d3b8f76583efa26c1a63a21c9d3c1143daa29"
+  integrity sha1-6S07j3ZYPvomwaY6IcnTwRQ9qik=
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -1594,10 +1594,10 @@
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/q/-/q-1.5.4.tgz#15925414e0ad2cd765bfef58842f7e26a7accb24"
   integrity sha1-FZJUFOCtLNdlv+9YhC9+JqesyyQ=
 
-"@types/react@^16.9.53":
-  version "16.9.53"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/react/-/react-16.9.53.tgz#40cd4f8b8d6b9528aedd1fff8fcffe7a112a3d23"
-  integrity sha1-QM1Pi41rlSiu3R//j8/+ehEqPSM=
+"@types/react@^16.9.54":
+  version "16.9.54"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/@types/react/-/react-16.9.54.tgz#140280c31825287ee74e9da95285b91c5a2e471d"
+  integrity sha1-FAKAwxglKH7nTp2pUoW5HFouRx0=
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -2865,7 +2865,7 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001109, can
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/caniuse-lite/-/caniuse-lite-1.0.30001151.tgz#1ddfde5e6fff02aad7940b4edb7d3ac76b0cb00b"
   integrity sha1-Hd/eXm//AqrXlAtO2306x2sMsAs=
 
-canvaskit-wasm@^0.19.0:
+canvaskit-wasm@0.19.0:
   version "0.19.0"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/canvaskit-wasm/-/canvaskit-wasm-0.19.0.tgz#125fddee03d31eb1bd06635b7e971ac4eee4ec19"
   integrity sha1-El/d7gPTHrG9BmNbfpcaxO7k7Bk=
@@ -4000,9 +4000,9 @@ ejs@^2.6.1:
   integrity sha1-SGYSh1c9zFPjZsehrlLDoSDuybo=
 
 electron-to-chromium@^1.3.564, electron-to-chromium@^1.3.571:
-  version "1.3.583"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/electron-to-chromium/-/electron-to-chromium-1.3.583.tgz#47a9fde74740b1205dba96db2e433132964ba3ee"
-  integrity sha1-R6n950dAsSBdupbbLkMxMpZLo+4=
+  version "1.3.584"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/electron-to-chromium/-/electron-to-chromium-1.3.584.tgz#506cf7ba5895aafa8241876ab028654b61fd9ceb"
+  integrity sha1-UGz3uliVqvqCQYdqsChlS2H9nOs=
 
 elliptic@^6.5.3:
   version "6.5.3"
@@ -4356,12 +4356,12 @@ eslint-webpack-plugin@^2.1.0:
     schema-utils "^2.7.0"
 
 eslint@^7.11.0:
-  version "7.12.0"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/eslint/-/eslint-7.12.0.tgz#7b6a85f87a9adc239e979bb721cde5ce0dc27da6"
-  integrity sha1-e2qF+Hqa3COel5u3Ic3lzg3CfaY=
+  version "7.12.1"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/eslint/-/eslint-7.12.1.tgz#bd9a81fa67a6cfd51656cdb88812ce49ccec5801"
+  integrity sha1-vZqB+memz9UWVs24iBLOSczsWAE=
   dependencies:
     "@babel/code-frame" "^7.0.0"
-    "@eslint/eslintrc" "^0.2.0"
+    "@eslint/eslintrc" "^0.2.1"
     ajv "^6.10.0"
     chalk "^4.0.0"
     cross-spawn "^7.0.2"
@@ -6603,9 +6603,9 @@ kleur@^3.0.3:
   integrity sha1-p5yezIbuHOP6YgbRIWxQHxR/wH4=
 
 language-subtag-registry@~0.3.2:
-  version "0.3.20"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/language-subtag-registry/-/language-subtag-registry-0.3.20.tgz#a00a37121894f224f763268e431c55556b0c0755"
-  integrity sha1-oAo3EhiU8iT3YyaOQxxVVWsMB1U=
+  version "0.3.21"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/language-subtag-registry/-/language-subtag-registry-0.3.21.tgz#04ac218bea46f04cb039084602c6da9e788dd45a"
+  integrity sha1-BKwhi+pG8EywOQhGAsbanniN1Fo=
 
 language-tags@^1.0.5:
   version "1.0.5"
@@ -6804,7 +6804,7 @@ lru-cache@^6.0.0:
   dependencies:
     yallist "^4.0.0"
 
-magic-string@^0.25.0, magic-string@^0.25.5:
+magic-string@^0.25.0, magic-string@^0.25.7:
   version "0.25.7"
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/magic-string/-/magic-string-0.25.7.tgz#3f497d6fd34c669c6798dcb821f2ef31f5445051"
   integrity sha1-P0l9b9NMZpxnmNy4IfLvMfVEUFE=
@@ -9345,9 +9345,9 @@ run-async@^2.4.0:
   integrity sha1-hEDsz5nqPnC9QJ1JqriOEMGJpFU=
 
 run-parallel@^1.1.9:
-  version "1.1.9"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/run-parallel/-/run-parallel-1.1.9.tgz#c9dd3a7cf9f4b2c4b6244e173a6ed866e61dd679"
-  integrity sha1-yd06fPn0ssS2JE4XOm7YZuYd1nk=
+  version "1.1.10"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/run-parallel/-/run-parallel-1.1.10.tgz#60a51b2ae836636c81377df16cb107351bcd13ef"
+  integrity sha1-YKUbKug2Y2yBN33xbLEHNRvNE+8=
 
 run-queue@^1.0.0, run-queue@^1.0.3:
   version "1.0.3"
@@ -10294,9 +10294,9 @@ thunky@^1.0.2:
   integrity sha1-Wrr3FKlAXbBQRzK7zNLO3Z75U30=
 
 timers-browserify@^2.0.4:
-  version "2.0.11"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/timers-browserify/-/timers-browserify-2.0.11.tgz#800b1f3eee272e5bc53ee465a04d0e804c31211f"
-  integrity sha1-gAsfPu4nLlvFPuRloE0OgEwxIR8=
+  version "2.0.12"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/timers-browserify/-/timers-browserify-2.0.12.tgz#44a45c11fbf407f34f97bccd1577c652361b00ee"
+  integrity sha1-RKRcEfv0B/NPl7zNFXfGUjYbAO4=
   dependencies:
     setimmediate "^1.0.4"
 
@@ -10506,10 +10506,10 @@ typedarray@^0.0.6:
   resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@~4.0.3:
-  version "4.0.3"
-  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/typescript/-/typescript-4.0.3.tgz#153bbd468ef07725c1df9c77e8b453f8d36abba5"
-  integrity sha1-FTu9Ro7wdyXB35x36LRT+NNqu6U=
+typescript@4.0.5:
+  version "4.0.5"
+  resolved "https://artifactory.persgroep.cloud/artifactory/api/npm/npm/typescript/-/typescript-4.0.5.tgz#ae9dddfd1069f1cb5beb3ef3b2170dd7c1332389"
+  integrity sha1-rp3d/RBp8ctb6z7zshcN18EzI4k=
 
 unicode-canonical-property-names-ecmascript@^1.0.4:
   version "1.0.4"

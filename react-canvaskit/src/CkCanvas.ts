@@ -54,6 +54,7 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
     this.drawSelf(this.skObject)
     this.children.forEach(child => child.render(this))
     this.skObject.restore()
+    parent.skObject?.flush()
   }
 
   private drawSelf (skCanvas: SkCanvas) {

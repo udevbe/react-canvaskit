@@ -16,8 +16,8 @@ import {
 
 // @ts-ignore
 const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
-  // locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.19.0/bin/${file}`
-  locateFile: (file: string): string => __dirname + '/../node_modules/canvaskit-wasm/bin/' + file
+  locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.19.0/bin/${file}`
+  // locateFile: (file: string): string => __dirname + '/../node_modules/canvaskit-wasm/bin/' + file
 })
 let canvasKit: CanvasKit | undefined
 
@@ -250,7 +250,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
   },
 
   getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): SkObjectRef<any> {
-    return { current: instance.skObject }
+    return instance.skObject
   },
 
   prepareUpdate (
