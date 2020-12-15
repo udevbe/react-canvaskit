@@ -2719,10 +2719,10 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30001035, can
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001112.tgz#0fffc3b934ff56ff0548c37bc9dad7d882bcf672"
   integrity sha512-J05RTQlqsatidif/38aN3PGULCLrg8OYQOlJUKbeYVzC2mGZkZLIztwRlB3MtrfLmawUmjFlNJvy/uhwniIe1Q==
 
-canvaskit-oc@0.0.1-alpha.0:
-  version "0.0.1-alpha.0"
-  resolved "https://registry.yarnpkg.com/canvaskit-oc/-/canvaskit-oc-0.0.1-alpha.0.tgz#bc74c55afa68cbe90e8c985cbd4f5efc44fe33ae"
-  integrity sha512-rEoEU/NH46O48TjbohN9GkjFbs3D7UakUwjSJ/IILt1bYeBrkYA9rb+7aYISCGqINeN36yUI7mRCUVmkDx8X4g==
+canvaskit-oc@0.0.1-alpha.1:
+  version "0.0.1-alpha.1"
+  resolved "https://registry.yarnpkg.com/canvaskit-oc/-/canvaskit-oc-0.0.1-alpha.1.tgz#283ffaca30021b802551b92e88cf7b0fc11bbf37"
+  integrity sha512-Ii0x2+JE3DzYakoi9QJ5bhpX+H8kD6U10HRgYBwY7jtTg9Jjmf4cAGlLFHC1lL+L0YznUQDicGiI3WYuh9piOQ==
 
 capture-exit@^2.0.0:
   version "2.0.0"
@@ -5277,9 +5277,9 @@ inherits@2.0.3:
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
 
 ini@^1.3.5:
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
-  integrity sha512-RZY5huIKCMRWDUqZlEi72f/lmXKMvuszcMBduliQ3nnWbx9X/ZBQO7DijMEYS9EhHBb2qacRUMtC7svLwe0lcw==
+  version "1.3.8"
+  resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.8.tgz#a29da425b48806f34767a4efce397269af28432c"
+  integrity sha512-JV/yugV2uzW5iMRSiZAyDtQd+nxtUnjeLt0acNdw98kKLrvuRVyB80tsREOE7yvGVgalhZ6RNXCmEHkUKBKxew==
 
 inquirer@7.0.4:
   version "7.0.4"
@@ -8524,10 +8524,10 @@ react-app-polyfill@^1.0.6:
     regenerator-runtime "^0.13.3"
     whatwg-fetch "^3.0.0"
 
-react-canvaskit@0.0.1-alpha.6:
-  version "0.0.1-alpha.6"
-  resolved "https://registry.yarnpkg.com/react-canvaskit/-/react-canvaskit-0.0.1-alpha.6.tgz#33a5c972c4785e9c2fff8b70643075bf5a3eb49f"
-  integrity sha512-zqYl9WZ3AgY4vjq33wCzmE9n3i0femkFODcMTrL7+XQp6Ioemx+HiUFbRrP5gNnogZRuR9CqATcQ4YKAwe7mTw==
+react-canvaskit@0.0.1-alpha.7:
+  version "0.0.1-alpha.7"
+  resolved "https://registry.yarnpkg.com/react-canvaskit/-/react-canvaskit-0.0.1-alpha.7.tgz#2825ba68d432d817434dbaae0c7c9b2a185da60c"
+  integrity sha512-lVfMqioHlSx0kcnHuB5cQ8trmv2oj8gPapmER5O+I+Etypo5ehGye/OythU0OU25PZia/PXp5k1r34gH5s403w==
   dependencies:
     react-reconciler "0.25.1"
 
