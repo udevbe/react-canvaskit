@@ -202,3 +202,8 @@ dist
 /react-canvaskit/types/
 /react-canvaskit/docs/
 /demos/paragraph-demo/src/react-app-env.d.ts
+/demos/offscreen-paragraph-demo/build
+/.idea
+/demos/offscreen-paragraph-demo/src/react-app-env.d.ts
+/demos/offscreen-paragraph-demo/yarn.lock
+/demos/simple-paint/yarn.lock
