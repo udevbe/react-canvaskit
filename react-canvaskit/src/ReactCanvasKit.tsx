@@ -14,9 +14,11 @@ import {
 } from './SkiaElementTypes'
 
 
+const loadRobotoFontData = fetch('https://storage.googleapis.com/skia-cdn/misc/Roboto-Regular.ttf')
+  .then((response) => response.arrayBuffer());
 // @ts-ignore
 const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
-  locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.28.1/bin/${file}`
+  locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.32.0/bin/${file}`
   // locateFile: (file: string): string => __dirname + '/../node_modules/canvaskit-wasm/bin/' + file
 })
 let canvasKit: CanvasKit | undefined
@@ -31,6 +33,7 @@ export let FontManagerProvider: FunctionComponent<{ fontData: ArrayBuffer[] | un
 
 export async function init () {
   canvasKit = await canvasKitPromise
+  const robotoFontData = await loadRobotoFontData
   // const copy to make the TS compiler happy when we pass it down to a lambda
   const ck = canvasKit
 
@@ -38,7 +41,8 @@ export async function init () {
   useCanvasKit = () => React.useContext(CanvasKitContext)
   CanvasKitProvider = ({ children }) => <CanvasKitContext.Provider value={ck}>children</CanvasKitContext.Provider>
 
-  FontManagerContext = React.createContext(ck.FontMgr.RefDefault())
+  const defaultFontManager = ck.FontMgr.FromData(robotoFontData) as  SkFontManager
+  FontManagerContext = React.createContext(defaultFontManager)
   useFontManager = () => React.useContext(FontManagerContext)
   FontManagerProvider = (props: { fontData: ArrayBuffer[] | undefined, children?: ReactNode }) => {
     if (props.fontData) {
@@ -54,7 +58,7 @@ export async function init () {
 
     } else {
       return <FontManagerContext.Provider
-        value={ck.FontMgr.RefDefault()}>
+        value={defaultFontManager}>
         {props.children}
       </FontManagerContext.Provider>
     }

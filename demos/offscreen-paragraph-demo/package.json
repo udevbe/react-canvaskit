@@ -3,14 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "canvaskit-wasm": "0.28.1",
+    "canvaskit-wasm": "0.32.0",
     "react": "17.0.2",
     "react-canvaskit": "link: ../react-canvaskit",
     "react-scripts": "4.0.3"
   },
   "devDependencies": {
-    "@types/react": "^17.0.14",
-    "typescript": "4.3.5",
+    "@types/react": "^17.0.38",
+    "typescript": "4.5.4",
     "workerize-loader": "^1.3.0"
   },
   "scripts": {
