@@ -1,7 +1,15 @@
-import type { Canvas as SkCanvas, CanvasKit, Paragraph as SkParagraph, Surface as SkSurface } from 'canvaskit-wasm'
+import type {
+  Canvas as SkCanvas,
+  CanvasKit,
+  Image as SkImage,
+  Paragraph as SkParagraph,
+  Surface as SkSurface
+} from 'canvaskit-wasm'
 import type { MutableRefObject } from 'react'
 import type { CkCanvasProps } from './CkCanvas'
 import { createCkCanvas } from './CkCanvas'
+import type { CkEncodedImageProps } from './CkEncodedImage'
+import { createCkEncodedImage } from './CkEncodedImage'
 import type { CkLineProps } from './CkLine'
 import { createCkLine } from './CkLine'
 import type { CkParagraphProps } from './CkParagraph'
@@ -21,6 +29,7 @@ export interface CkObjectTyping {
   'ck-line': { type: never, name: 'Line', props: CkLineProps }
   'ck-text': { type: never, name: 'Text', props: CkTextProps }
   'ck-paragraph': { type: SkParagraph, name: 'SkParagraph', props: CkParagraphProps }
+  'ck-encoded-image': { type: SkImage, name: 'SkImage', props: CkEncodedImageProps}
 }
 
 export type CkElementType = keyof CkObjectTyping
@@ -412,7 +421,8 @@ const CkElements: { [key in CkElementType]: CkElementCreator<any> } = {
   'ck-line': createCkLine,
   'ck-surface': createCkSurface,
   'ck-canvas': createCkCanvas,
-  'ck-paragraph': createCkParagraph
+  'ck-paragraph': createCkParagraph,
+  'ck-encoded-image': createCkEncodedImage
 }
 
 export function createCkElement (type: CkElementType, props: CkElementProps<any>, canvasKit: CanvasKit): CkElement<any> {
@@ -427,6 +437,7 @@ declare global {
       'ck-surface': CkSurfaceProps
       'ck-line': CkLineProps
       'ck-paragraph': CkParagraphProps
+      'ck-encoded-image': CkEncodedImageProps
     }
   }
 }
