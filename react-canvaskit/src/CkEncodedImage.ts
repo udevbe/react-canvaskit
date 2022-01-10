@@ -7,7 +7,7 @@ import {
   CkElementCreator,
   CkElementProps,
   CkObjectTyping,
-  Paint
+  Paint,
 } from './SkiaElementTypes'
 
 export interface CkEncodedImageProps extends CkElementProps<never> {
@@ -18,7 +18,7 @@ export interface CkEncodedImageProps extends CkElementProps<never> {
 }
 
 class CkEncodedImage implements CkElement<'ck-encoded-image'> {
-  readonly skObjectType: CkObjectTyping["ck-encoded-image"]["name"] = 'SkImage'
+  readonly skObjectType: CkObjectTyping['ck-encoded-image']['name'] = 'SkImage'
   readonly type: 'ck-encoded-image' = 'ck-encoded-image'
   deleted = false
 
@@ -27,17 +27,13 @@ class CkEncodedImage implements CkElement<'ck-encoded-image'> {
 
   private image?: SkImage
 
-  constructor (
-    readonly canvasKit: CanvasKit,
-    readonly props: CkObjectTyping['ck-encoded-image']['props']
-  ) {
+  constructor(readonly canvasKit: CanvasKit, readonly props: CkObjectTyping['ck-encoded-image']['props']) {
     this.defaultPaint = new this.canvasKit.Paint()
     this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
     this.defaultPaint.setAntiAlias(true)
   }
 
-
-  delete (): void {
+  delete(): void {
     if (this.deleted) {
       return
     }
@@ -48,14 +44,14 @@ class CkEncodedImage implements CkElement<'ck-encoded-image'> {
     this.deleted = true
   }
 
-  render (parent: CkElementContainer<any>): void {
+  render(parent: CkElementContainer<any>): void {
     if (this.deleted) {
       throw new Error('BUG. line element deleted.')
     }
 
-    if(parent && isCkCanvas(parent)){
+    if (parent && isCkCanvas(parent)) {
       this.image = this.canvasKit.MakeImageFromEncoded(this.props.bytes) ?? undefined
-      if(this.image){
+      if (this.image) {
         this.renderPaint?.delete()
         this.renderPaint = toSkPaint(this.canvasKit, this.props.paint)
         parent.skObject?.drawImage(this.image, this.props.left, this.props.top, this.renderPaint ?? this.defaultPaint)
@@ -64,4 +60,5 @@ class CkEncodedImage implements CkElement<'ck-encoded-image'> {
   }
 }
 
-export const createCkEncodedImage: CkElementCreator<'ck-encoded-image'> = (type, props, canvasKit)=> new CkEncodedImage(canvasKit, props)
+export const createCkEncodedImage: CkElementCreator<'ck-encoded-image'> = (type, props, canvasKit) =>
+  new CkEncodedImage(canvasKit, props)

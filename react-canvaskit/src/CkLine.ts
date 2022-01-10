@@ -7,7 +7,7 @@ import {
   CkElementCreator,
   CkElementProps,
   CkObjectTyping,
-  Paint
+  Paint,
 } from './SkiaElementTypes'
 
 export interface CkLineProps extends CkElementProps<never> {
@@ -26,16 +26,13 @@ class CkLine implements CkElement<'ck-line'> {
   private renderPaint?: SkPaint
   deleted = false
 
-  constructor (
-    readonly canvasKit: CanvasKit,
-    readonly props: CkObjectTyping['ck-line']['props']
-  ) {
+  constructor(readonly canvasKit: CanvasKit, readonly props: CkObjectTyping['ck-line']['props']) {
     this.defaultPaint = new this.canvasKit.Paint()
     this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
     this.defaultPaint.setAntiAlias(true)
   }
 
-  render (parent: CkElementContainer<any>): void {
+  render(parent: CkElementContainer<any>): void {
     if (this.deleted) {
       throw new Error('BUG. line element deleted.')
     }
@@ -43,11 +40,17 @@ class CkLine implements CkElement<'ck-line'> {
       // TODO we can be smart and only recreate the paint object if the paint props have changed?
       this.renderPaint?.delete()
       this.renderPaint = toSkPaint(this.canvasKit, this.props.paint)
-      parent.skObject?.drawLine(this.props.x1, this.props.y1, this.props.x2, this.props.y2, this.renderPaint ?? this.defaultPaint)
+      parent.skObject?.drawLine(
+        this.props.x1,
+        this.props.y1,
+        this.props.x2,
+        this.props.y2,
+        this.renderPaint ?? this.defaultPaint,
+      )
     }
   }
 
-  delete () {
+  delete() {
     if (this.deleted) {
       return
     }

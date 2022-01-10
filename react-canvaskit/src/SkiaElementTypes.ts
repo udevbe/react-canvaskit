@@ -3,7 +3,7 @@ import type {
   CanvasKit,
   Image as SkImage,
   Paragraph as SkParagraph,
-  Surface as SkSurface
+  Surface as SkSurface,
 } from 'canvaskit-wasm'
 import type { MutableRefObject } from 'react'
 import type { CkCanvasProps } from './CkCanvas'
@@ -24,33 +24,33 @@ export type CkElementProps<T> = {
 }
 
 export interface CkObjectTyping {
-  'ck-surface': { type: SkSurface, name: 'SkSurface', props: CkSurfaceProps }
-  'ck-canvas': { type: SkCanvas, name: 'SkCanvas', props: CkCanvasProps }
-  'ck-line': { type: never, name: 'Line', props: CkLineProps }
-  'ck-text': { type: never, name: 'Text', props: CkTextProps }
-  'ck-paragraph': { type: SkParagraph, name: 'SkParagraph', props: CkParagraphProps }
-  'ck-encoded-image': { type: SkImage, name: 'SkImage', props: CkEncodedImageProps}
+  'ck-surface': { type: SkSurface; name: 'SkSurface'; props: CkSurfaceProps }
+  'ck-canvas': { type: SkCanvas; name: 'SkCanvas'; props: CkCanvasProps }
+  'ck-line': { type: never; name: 'Line'; props: CkLineProps }
+  'ck-text': { type: never; name: 'Text'; props: CkTextProps }
+  'ck-paragraph': { type: SkParagraph; name: 'SkParagraph'; props: CkParagraphProps }
+  'ck-encoded-image': { type: SkImage; name: 'SkImage'; props: CkEncodedImageProps }
 }
 
 export type CkElementType = keyof CkObjectTyping
 
 export interface CkElement<TypeName extends keyof CkObjectTyping> {
-  readonly canvasKit: CanvasKit,
+  readonly canvasKit: CanvasKit
   readonly type: TypeName
   props: CkObjectTyping[TypeName]['props']
   readonly skObjectType: CkObjectTyping[TypeName]['name']
   skObject?: CkObjectTyping[TypeName]['type']
 
-  render (parent: CkElementContainer<any>): void
+  render(parent: CkElementContainer<any>): void
 
-  delete (): void
+  delete(): void
 }
 
 export interface CkElementCreator<TypeName extends keyof CkObjectTyping> {
   (type: TypeName, props: CkObjectTyping[TypeName]['props'], canvasKit: CanvasKit): CkElement<TypeName>
 }
 
-export function isContainerElement (ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
+export function isContainerElement(ckElement: CkElement<any>): ckElement is CkElementContainer<any> {
   return (ckElement as CkElementContainer<any>).children !== undefined
 }
 
@@ -63,37 +63,33 @@ namespace CkPropTypes {
     red: 'number',
     green: 'number',
     blue: 'number',
-    alpha: 'number'
+    alpha: 'number',
   }
 }
 
 export interface Color {
-  red: number,
-  green: number,
-  blue: number,
+  red: number
+  green: number
+  blue: number
   alpha?: number
 }
 
 export type ColorTypeName = 'Color'
 
-export enum FilterQuality {
-  // TODO
-}
+export enum FilterQuality {}
+// TODO
 
-export enum StrokeCap {
-  // TODO
-}
+export enum StrokeCap {}
+// TODO
 
-export enum StrokeJoin {
-  // TODO
-}
+export enum StrokeJoin {}
+// TODO
 
-export enum BlendMode {
-  // TODO
-}
+export enum BlendMode {}
+// TODO
 
 export type ColorFilter =
-  BlendColorFilter
+  | BlendColorFilter
   | ComposeColorFilter
   | LerpColorFilter
   | LinearToSRGBGammaColorFilter
@@ -101,18 +97,18 @@ export type ColorFilter =
   | SRGBToLinearGammaColorFilter
 
 export interface BlendColorFilter {
-  color: Color,
+  color: Color
   blendMode: BlendMode
 }
 
 export interface ComposeColorFilter {
-  first: ColorFilter,
+  first: ColorFilter
   second: ColorFilter
 }
 
 export interface LerpColorFilter {
-  lerp: number,
-  first: ColorFilter,
+  lerp: number
+  first: ColorFilter
   second: ColorFilter
 }
 
@@ -126,9 +122,8 @@ export type SRGBToLinearGammaColorFilter = 'SRGBToLinearGamma'
 
 export type ImageFilter = BlurImageFilter | ColorImageFilter | ComposeImageFilter | MatrixTransformImageFilter
 
-export enum TileMode {
-  // TODO
-}
+export enum TileMode {}
+// TODO
 
 export interface BlurImageFilter {
   rx: number
@@ -138,34 +133,32 @@ export interface BlurImageFilter {
 }
 
 export interface ColorImageFilter {
-  filter: ColorFilter,
+  filter: ColorFilter
   next: ImageFilter | null
 }
 
 export interface ComposeImageFilter {
-  first: ImageFilter,
+  first: ImageFilter
   second: ImageFilter
 }
 
-export enum FilterQuality {
-  // TODO
-}
+export enum FilterQuality {}
+// TODO
 
 export interface MatrixTransformImageFilter {
-  matrix: MatrixColorFilter,
-  filterQuality: FilterQuality,
+  matrix: MatrixColorFilter
+  filterQuality: FilterQuality
   next: ImageFilter | null
 }
 
 export type MaskFilter = BlurMaskFilter
 
-export enum BlurStyle {
-  // TODO
-}
+export enum BlurStyle {}
+// TODO
 
 export interface BlurMaskFilter {
-  blurStyle: BlurStyle,
-  radius: number,
+  blurStyle: BlurStyle
+  radius: number
   b: boolean
 }
 
@@ -181,8 +174,8 @@ export interface CornerPathEffect {
 }
 
 export interface DiscretePathEffect {
-  frequency: number,
-  amplitude: number,
+  frequency: number
+  amplitude: number
   seed: number
 }
 
@@ -190,38 +183,38 @@ export type Shader = LinearGradientShader | RadialGradientShader | TwoPointConic
 
 export type Point = [number, number]
 
-export type Matrix = [number, number, number, number, number, number, number, number, number];
+export type Matrix = [number, number, number, number, number, number, number, number, number]
 
 export interface LinearGradientShader {
-  start: Point,
-  end: Point,
-  colors: Color[],
-  positions: number[],
-  mode: number,
-  localMatrix: Matrix | null,
+  start: Point
+  end: Point
+  colors: Color[]
+  positions: number[]
+  mode: number
+  localMatrix: Matrix | null
   flags: number
 }
 
 export interface RadialGradientShader {
-  center: Point,
-  radius: number,
-  colors: Color[],
-  positions: number[],
-  mode: number,
-  localMatrix?: Matrix,
+  center: Point
+  radius: number
+  colors: Color[]
+  positions: number[]
+  mode: number
+  localMatrix?: Matrix
   flags: number
 }
 
 export interface TwoPointConicalGradientShader {
-  start: Point,
-  startRadius: number,
-  end: Point,
-  endRadius: number,
-  colors: Color[],
-  positions: number[],
-  mode: number,
-  localMatrix?: Matrix,
-  flags: number,
+  start: Point
+  startRadius: number
+  end: Point
+  endRadius: number
+  colors: Color[]
+  positions: number[]
+  mode: number
+  localMatrix?: Matrix
+  flags: number
 }
 
 export enum PaintStyle {
@@ -236,20 +229,20 @@ export enum PaintStyle {
   /**
    * Fill and stroke the geometry.
    */
-  StrokeAndFill = 2
+  StrokeAndFill = 2,
 }
 
 export interface Paint {
-  blendMode?: BlendMode;
+  blendMode?: BlendMode
   color?: Color | string
-  filterQuality?: FilterQuality;
-  strokeCap?: StrokeCap;
-  strokeJoin?: StrokeJoin;
-  strokeMiter?: number;
-  strokeWidth?: number;
+  filterQuality?: FilterQuality
+  strokeCap?: StrokeCap
+  strokeJoin?: StrokeJoin
+  strokeMiter?: number
+  strokeWidth?: number
   antiAlias?: boolean
   colorFilter?: ColorFilter
-  imageFilter?: ImageFilter;
+  imageFilter?: ImageFilter
   maskFilter?: MaskFilter
   pathEffect?: PathEffect
   shader?: Shader
@@ -257,22 +250,22 @@ export interface Paint {
 }
 
 export interface LineProps {
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
+  x1: number
+  y1: number
+  x2: number
+  y2: number
   paint: Paint
 }
 
 export enum TextAlignEnum {
   Left = 0,
   Center = 1,
-  Right = 2
+  Right = 2,
 }
 
 export enum TextDirectionEnum {
   Ltr = 0,
-  Rtl = 1
+  Rtl = 1,
   // TODO
 }
 
@@ -325,7 +318,7 @@ export enum FontWeightEnum {
   /**
    *A thin font weight of 100.
    */
-  Thin = 100
+  Thin = 100,
 }
 
 export enum FontSlantEnum {
@@ -378,41 +371,41 @@ export interface TypeFace {
 }
 
 export interface Font {
-  typeFace?: TypeFace,
+  typeFace?: TypeFace
   size: number
 }
 
 export interface CkFontStyle {
-  weight?: FontWeightEnum;
-  slant?: FontSlantEnum;
-  width?: FontWidthEnum;
+  weight?: FontWeightEnum
+  slant?: FontSlantEnum
+  width?: FontWidthEnum
 }
 
 export interface TextStyle {
-  backgroundColor?: Color | string;
-  color?: Color | string;
-  decoration?: number;
-  decorationThickness?: number;
-  fontFamilies?: string[];
-  fontSize?: number;
-  fontStyle?: CkFontStyle;
-  foregroundColor?: Color | string;
+  backgroundColor?: Color | string
+  color?: Color | string
+  decoration?: number
+  decorationThickness?: number
+  fontFamilies?: string[]
+  fontSize?: number
+  fontStyle?: CkFontStyle
+  foregroundColor?: Color | string
 }
 
 export interface ParagraphStyle {
-  disableHinting?: boolean;
-  heightMultiplier?: number;
-  ellipsis?: string,
-  maxLines?: number;
-  textAlign?: TextAlignEnum;
-  textDirection?: TextDirectionEnum;
-  textStyle: TextStyle;
+  disableHinting?: boolean
+  heightMultiplier?: number
+  ellipsis?: string
+  maxLines?: number
+  textAlign?: TextAlignEnum
+  textDirection?: TextDirectionEnum
+  textStyle: TextStyle
 }
 
 export interface ParagraphProps {
-  style: ParagraphStyle,
+  style: ParagraphStyle
   maxWidth: number
-  x: number,
+  x: number
   y: number
 }
 
@@ -422,10 +415,10 @@ const CkElements: { [key in CkElementType]: CkElementCreator<any> } = {
   'ck-surface': createCkSurface,
   'ck-canvas': createCkCanvas,
   'ck-paragraph': createCkParagraph,
-  'ck-encoded-image': createCkEncodedImage
+  'ck-encoded-image': createCkEncodedImage,
 }
 
-export function createCkElement (type: CkElementType, props: CkElementProps<any>, canvasKit: CanvasKit): CkElement<any> {
+export function createCkElement(type: CkElementType, props: CkElementProps<any>, canvasKit: CanvasKit): CkElement<any> {
   return CkElements[type](type, props, canvasKit)
 }
 
@@ -441,5 +434,3 @@ declare global {
     }
   }
 }
-
-

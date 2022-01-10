@@ -10,16 +10,15 @@ import {
   CkElementProps,
   CkElementType,
   createCkElement,
-  isContainerElement
+  isContainerElement,
 } from './SkiaElementTypes'
 
-
-const loadRobotoFontData = fetch('https://storage.googleapis.com/skia-cdn/misc/Roboto-Regular.ttf')
-  .then((response) => response.arrayBuffer());
+const loadRobotoFontData = fetch('https://storage.googleapis.com/skia-cdn/misc/Roboto-Regular.ttf').then((response) =>
+  response.arrayBuffer(),
+)
 // @ts-ignore
 const canvasKitPromise: Promise<CanvasKit> = CanvasKitInit({
-  locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.32.0/bin/${file}`
-  // locateFile: (file: string): string => __dirname + '/../node_modules/canvaskit-wasm/bin/' + file
+  locateFile: (file: string): string => `https://unpkg.com/canvaskit-wasm@0.32.0/bin/${file}`,
 })
 let canvasKit: CanvasKit | undefined
 
@@ -29,9 +28,9 @@ export let CanvasKitProvider: FunctionComponent
 
 let FontManagerContext: React.Context<SkFontManager>
 export let useFontManager: () => SkFontManager
-export let FontManagerProvider: FunctionComponent<{ fontData: ArrayBuffer[] | undefined, children?: ReactNode }>
+export let FontManagerProvider: FunctionComponent<{ fontData: ArrayBuffer[] | undefined; children?: ReactNode }>
 
-export async function init () {
+export async function init() {
   canvasKit = await canvasKitPromise
   const robotoFontData = await loadRobotoFontData
   // const copy to make the TS compiler happy when we pass it down to a lambda
@@ -41,26 +40,19 @@ export async function init () {
   useCanvasKit = () => React.useContext(CanvasKitContext)
   CanvasKitProvider = ({ children }) => <CanvasKitContext.Provider value={ck}>children</CanvasKitContext.Provider>
 
-  const defaultFontManager = ck.FontMgr.FromData(robotoFontData) as  SkFontManager
+  const defaultFontManager = ck.FontMgr.FromData(robotoFontData) as SkFontManager
   FontManagerContext = React.createContext(defaultFontManager)
   useFontManager = () => React.useContext(FontManagerContext)
-  FontManagerProvider = (props: { fontData: ArrayBuffer[] | undefined, children?: ReactNode }) => {
+  FontManagerProvider = (props: { fontData: ArrayBuffer[] | undefined; children?: ReactNode }) => {
     if (props.fontData) {
       const fontMgrFromData = ck.FontMgr.FromData(...props.fontData)
       if (fontMgrFromData === null) {
         throw new Error('Failed to create font manager from font data.')
       }
 
-      return <FontManagerContext.Provider
-        value={fontMgrFromData}>
-        {props.children}
-      </FontManagerContext.Provider>
-
+      return <FontManagerContext.Provider value={fontMgrFromData}>{props.children}</FontManagerContext.Provider>
     } else {
-      return <FontManagerContext.Provider
-        value={defaultFontManager}>
-        {props.children}
-      </FontManagerContext.Provider>
+      return <FontManagerContext.Provider value={defaultFontManager}>{props.children}</FontManagerContext.Provider>
     }
   }
 }
@@ -73,22 +65,22 @@ export interface SkObjectRef<T> {
   current: T
 }
 
-interface ReactCanvasKitHostConfig extends HostConfig<
-  CkElementType, // Type
-  CkElementProps<any>, // Props
-  CkElementContainer<any>, // Container
-  CkElement<any>, // Instance
-  CkElement<'ck-text'> | CkElement<'ck-paragraph'>, // TextInstance
-  any, // SuspenceInstance
-  any, // HydratableInstance
-  SkObjectRef<any>, // PublicInstance
-  ContainerContext, // HostContext
-  any, // UpdatePayload
-  CkElement<any>[], // _ChildSet
-  any, // TimeoutHandle
-  any // NoTimout
-  > {
-}
+interface ReactCanvasKitHostConfig
+  extends HostConfig<
+    CkElementType, // Type
+    CkElementProps<any>, // Props
+    CkElementContainer<any>, // Container
+    CkElement<any>, // Instance
+    CkElement<'ck-text'> | CkElement<'ck-paragraph'>, // TextInstance
+    any, // SuspenceInstance
+    any, // HydratableInstance
+    SkObjectRef<any>, // PublicInstance
+    ContainerContext, // HostContext
+    any, // UpdatePayload
+    CkElement<any>[], // _ChildSet
+    any, // TimeoutHandle
+    any // NoTimout
+  > {}
 
 // @ts-ignore TODO implement missing functions
 const hostConfig: ReactCanvasKitHostConfig = {
@@ -100,7 +92,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
   supportsPersistence: true,
   supportsHydration: false,
 
-  createContainerChildSet (container: CkElementContainer<any>): CkElement<any>[] {
+  createContainerChildSet(container: CkElementContainer<any>): CkElement<any>[] {
     return []
   },
   /**
@@ -108,11 +100,11 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param childSet
    * @param child
    */
-  appendChildToContainerChildSet (childSet: CkElement<any>[], child: CkElement<any>) {
+  appendChildToContainerChildSet(childSet: CkElement<any>[], child: CkElement<any>) {
     childSet.push(child)
   },
-  replaceContainerChildren (container: CkElementContainer<any>, newChildren: CkElement<any>[]) {
-    container.children.forEach(child => child.delete())
+  replaceContainerChildren(container: CkElementContainer<any>, newChildren: CkElement<any>[]) {
+    container.children.forEach((child) => child.delete())
     container.children = newChildren
   },
   /**
@@ -128,7 +120,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * <div id="root"></div>
    * @return A context object that you wish to pass to immediate child.
    */
-  getRootHostContext (rootContainerInstance): ContainerContext {
+  getRootHostContext(rootContainerInstance): ContainerContext {
     return { ckElement: rootContainerInstance }
   },
 
@@ -151,7 +143,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * most commonly <div id="root"></div>
    * @return A context object that you wish to pass to immediate child.
    */
-  getChildHostContext (parentHostContext, type, rootContainerInstance): ContainerContext {
+  getChildHostContext(parentHostContext, type, rootContainerInstance): ContainerContext {
     return parentHostContext
   },
 
@@ -178,8 +170,8 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param props Contains the props passed to the host react element.
    * @return This should be a boolean value.
    */
-  shouldSetTextContent (type, props): boolean {
-    return (type === 'ck-text') || (type === 'ck-paragraph')
+  shouldSetTextContent(type, props): boolean {
+    return type === 'ck-text' || type === 'ck-paragraph'
   },
 
   /**
@@ -195,7 +187,12 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    * @return This should be an actual text view element. In case of dom it would be a textNode.
    */
-  createTextInstance (text, rootContainerInstance, hostContext, internalInstanceHandle): CkElement<'ck-text'> | CkElement<'ck-paragraph'> {
+  createTextInstance(
+    text,
+    rootContainerInstance,
+    hostContext,
+    internalInstanceHandle,
+  ): CkElement<'ck-text'> | CkElement<'ck-paragraph'> {
     throw new Error(`The text '${text}' must be wrapped in a ck-text or ck-paragraph element.`)
   },
 
@@ -220,12 +217,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param hostContext contains the context from the parent node enclosing this node. This is the return value from getChildHostContext of the parent node.
    * @param internalInstanceHandle The fiber node for the text instance. This manages work for this instance.
    */
-  createInstance (
-    type,
-    props,
-    rootContainerInstance,
-    hostContext,
-    internalInstanceHandle) {
+  createInstance(type, props, rootContainerInstance, hostContext, internalInstanceHandle) {
     return createCkElement(type, props, hostContext.ckElement.canvasKit)
   },
 
@@ -240,7 +232,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param parentInstance The current node in the traversal
    * @param child The child dom node of the current node.
    */
-  appendInitialChild (parentInstance, child) {
+  appendInitialChild(parentInstance, child) {
     if (isContainerElement(parentInstance)) {
       parentInstance.children.push(child)
     } else {
@@ -272,11 +264,10 @@ const hostConfig: ReactCanvasKitHostConfig = {
    * @param rootContainerInstance root dom node you specify while calling render. This is most commonly <div id="root"></div>
    * @param hostContext contains the context from the parent node enclosing this node. This is the return value from getChildHostContext of the parent node.
    */
-  finalizeInitialChildren (parentInstance, type, props, rootContainerInstance, hostContext) {
+  finalizeInitialChildren(parentInstance, type, props, rootContainerInstance, hostContext) {
     return false
   },
-  finalizeContainerChildren (container: CkElementContainer<any>, newChildren: CkElement<any>[]) {
-  },
+  finalizeContainerChildren(container: CkElementContainer<any>, newChildren: CkElement<any>[]) {},
 
   /**
    *
@@ -291,7 +282,7 @@ const hostConfig: ReactCanvasKitHostConfig = {
    *
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
-  prepareForCommit (containerInfo) {
+  prepareForCommit(containerInfo) {
     return null
   },
 
@@ -306,13 +297,13 @@ const hostConfig: ReactCanvasKitHostConfig = {
    *
    * @param containerInfo root dom node you specify while calling render. This is most commonly <div id="root"></div>
    */
-  resetAfterCommit (containerInfo) {
+  resetAfterCommit(containerInfo) {
     // TODO instead of re-rendering everything, only rerender dirty nodes?
-    containerInfo.children.forEach(child => child.render(containerInfo))
+    containerInfo.children.forEach((child) => child.render(containerInfo))
     containerInfo.props.renderCallback?.()
   },
 
-  getPublicInstance (instance: CkElement<any> | CkElement<'ck-text'>): SkObjectRef<any> {
+  getPublicInstance(instance: CkElement<any> | CkElement<'ck-text'>): SkObjectRef<any> {
     return instance.skObject
   },
 
@@ -323,17 +314,11 @@ const hostConfig: ReactCanvasKitHostConfig = {
    *
    * See the meaning of `rootContainer` and `hostContext` in the `createInstance` documentation.
    */
-  prepareUpdate (
-    instance,
-    type,
-    oldProps,
-    newProps,
-    rootContainerInstance,
-    hostContext) {
+  prepareUpdate(instance, type, oldProps, newProps, rootContainerInstance, hostContext) {
     // TODO check & return if we can need to create an entire new object or we can reuse the underlying skobject and use it as the payload in cloneInstance.
   },
 
-  cloneInstance (
+  cloneInstance(
     instance: CkElement<any>,
     updatePayload: any,
     type: CkElementType,
@@ -341,7 +326,8 @@ const hostConfig: ReactCanvasKitHostConfig = {
     newProps: CkElementProps<any>,
     internalInstanceHandle: SkObjectRef<any>,
     keepChildren: boolean,
-    recyclableInstance: CkElement<any>): CkElement<any> {
+    recyclableInstance: CkElement<any>,
+  ): CkElement<any> {
     // TODO implement a way where we can create a new instance and reuse the underlying canvaskit objects where possible
 
     const ckElement = createCkElement(type, newProps, instance.canvasKit)
@@ -351,20 +337,17 @@ const hostConfig: ReactCanvasKitHostConfig = {
     // recyclableInstance.props = newProps
     // return recyclableInstance
     return ckElement
-  }
+  },
 }
 
 const canvaskitReconciler = ReactReconciler(hostConfig)
 canvaskitReconciler.injectIntoDevTools({
   bundleType: 1, // 0 for PROD, 1 for DEV
   version: '0.0.1', // version for your renderer
-  rendererPackageName: 'react-canvaskit' // package name
+  rendererPackageName: 'react-canvaskit', // package name
 })
 
-export function render (
-  element: ReactNode,
-  canvas: HTMLCanvasElement,
-  renderCallback?: () => void) {
+export function render(element: ReactNode, canvas: HTMLCanvasElement, renderCallback?: () => void) {
   if (canvasKit === undefined) {
     throw new Error('Not initialized')
   }
@@ -385,18 +368,13 @@ export function render (
     skObjectType: 'SkSurface',
     skObject: skSurface,
     children: [],
-    render () {
-      this.children.forEach(child => child.render(ckSurfaceElement))
-    }
+    render() {
+      this.children.forEach((child) => child.render(ckSurfaceElement))
+    },
   }
-  const container = canvaskitReconciler.createContainer(ckSurfaceElement, rootTag,hydrate, null)
+  const container = canvaskitReconciler.createContainer(ckSurfaceElement, rootTag, hydrate, null)
 
-  return new Promise<void>(resolve => {
-    canvaskitReconciler.updateContainer(
-      element,
-      container,
-      null,
-      () => resolve()
-    )
+  return new Promise<void>((resolve) => {
+    canvaskitReconciler.updateContainer(element, container, null, () => resolve())
   })
 }

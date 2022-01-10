@@ -8,7 +8,7 @@ import {
   CkElementProps,
   CkObjectTyping,
   Font,
-  Paint
+  Paint,
 } from './SkiaElementTypes'
 
 export interface CkTextProps extends CkElementProps<never> {
@@ -32,10 +32,7 @@ class CkText implements CkElement<'ck-text'> {
   private renderFont?: SkFont
   deleted = false
 
-  constructor (
-    canvasKit: CanvasKit,
-    props: CkObjectTyping['ck-text']['props']
-  ) {
+  constructor(canvasKit: CanvasKit, props: CkObjectTyping['ck-text']['props']) {
     this.canvasKit = canvasKit
     this.props = props
 
@@ -46,7 +43,7 @@ class CkText implements CkElement<'ck-text'> {
     this.defaultFont = new this.canvasKit.Font(null, 14)
   }
 
-  render (parent?: CkElementContainer<any>): void {
+  render(parent?: CkElementContainer<any>): void {
     if (parent && isCkCanvas(parent)) {
       // TODO we can be smart and only recreate the paint object if the paint props have changed.
       this.renderPaint?.delete()
@@ -54,11 +51,17 @@ class CkText implements CkElement<'ck-text'> {
       // TODO we can be smart and only recreate the font object if the font props have changed.
       this.renderFont?.delete()
       this.renderFont = toSkFont(this.canvasKit, this.props.font)
-      parent.skObject?.drawText(this.props.children, this.props.x ?? 0, this.props.y ?? 0, this.renderPaint ?? this.defaultPaint, this.renderFont ?? this.defaultFont)
+      parent.skObject?.drawText(
+        this.props.children,
+        this.props.x ?? 0,
+        this.props.y ?? 0,
+        this.renderPaint ?? this.defaultPaint,
+        this.renderFont ?? this.defaultFont,
+      )
     }
   }
 
-  delete () {
+  delete() {
     if (this.deleted) {
       return
     }

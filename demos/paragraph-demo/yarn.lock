@@ -8787,7 +8787,7 @@ react-app-polyfill@^2.0.0:
     regenerator-runtime "^0.13.7"
     whatwg-fetch "^3.4.1"
 
-"react-canvaskit@link: ../react-canvaskit":
+"react-canvaskit@link:react-canvaskit":
   version "0.0.0"
   uid ""
 
