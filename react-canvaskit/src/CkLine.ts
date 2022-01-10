@@ -1,4 +1,4 @@
-import type { CanvasKit, SkPaint } from 'canvaskit-oc'
+import type { CanvasKit, Paint as SkPaint } from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkPaint } from './SkiaElementMapping'
 import {
@@ -7,7 +7,7 @@ import {
   CkElementCreator,
   CkElementProps,
   CkObjectTyping,
-  Paint
+  Paint,
 } from './SkiaElementTypes'
 
 export interface CkLineProps extends CkElementProps<never> {
@@ -19,8 +19,6 @@ export interface CkLineProps extends CkElementProps<never> {
 }
 
 class CkLine implements CkElement<'ck-line'> {
-  readonly canvasKit: CanvasKit
-  readonly props: CkObjectTyping['ck-line']['props']
   readonly skObjectType: CkObjectTyping['ck-line']['name'] = 'Line'
   readonly type: 'ck-line' = 'ck-line'
 
@@ -28,31 +26,31 @@ class CkLine implements CkElement<'ck-line'> {
   private renderPaint?: SkPaint
   deleted = false
 
-  constructor (
-    canvasKit: CanvasKit,
-    props: CkObjectTyping['ck-line']['props']
-  ) {
-    this.canvasKit = canvasKit
-    this.props = props
-
-    this.defaultPaint = new this.canvasKit.SkPaint()
+  constructor(readonly canvasKit: CanvasKit, readonly props: CkObjectTyping['ck-line']['props']) {
+    this.defaultPaint = new this.canvasKit.Paint()
     this.defaultPaint.setStyle(this.canvasKit.PaintStyle.Fill)
     this.defaultPaint.setAntiAlias(true)
   }
 
-  render (parent: CkElementContainer<any>): void {
+  render(parent: CkElementContainer<any>): void {
     if (this.deleted) {
       throw new Error('BUG. line element deleted.')
     }
     if (parent && isCkCanvas(parent)) {
-      // TODO we can be smart and only recreate the paint object if the paint props have changed.
+      // TODO we can be smart and only recreate the paint object if the paint props have changed?
       this.renderPaint?.delete()
       this.renderPaint = toSkPaint(this.canvasKit, this.props.paint)
-      parent.skObject?.drawLine(this.props.x1, this.props.y1, this.props.x2, this.props.y2, this.renderPaint ?? this.defaultPaint)
+      parent.skObject?.drawLine(
+        this.props.x1,
+        this.props.y1,
+        this.props.x2,
+        this.props.y2,
+        this.renderPaint ?? this.defaultPaint,
+      )
     }
   }
 
-  delete () {
+  delete() {
     if (this.deleted) {
       return
     }

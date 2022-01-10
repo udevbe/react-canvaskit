@@ -16,7 +16,6 @@
     "accelerated",
     "hardware-acceleration"
   ],
-  "type": "module",
   "main": "dist/index.js",
   "typings": "types/index.d.ts",
   "files": [
@@ -24,65 +23,29 @@
     "types"
   ],
   "scripts": {
-    "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist types",
-    "build": "tsc && typedoc --includeDeclarations --excludeExternals --excludeNotExported --excludePrivate --ignoreCompilerErrors --out docs --target es6 --theme minimal --mode modules --inputFiles src/index.ts --inputFiles src/ButtonEvent.ts --inputFiles src/AxisEvent.ts --inputFiles src/KeyEvent.ts --inputFiles src/lib/index.ts",
+    "build": "tsc",
     "test": "jest --coverage",
     "test:watch": "jest --coverage --watch",
-    "test:prod": "yarn lint && yarn test -- --no-cache",
-    "deploy-docs": "ts-node tools/gh-pages-publish",
-    "report-coverage": "cat ./coverage/lcov.info | coveralls",
-    "commit": "git-cz",
-    "semantic-release": "semantic-release",
-    "semantic-release-prepare": "ts-node tools/semantic-release-prepare",
-    "precommit": "lint-staged",
-    "prepush": "npm run test:prod && npm run build",
-    "commitmsg": "commitlint -E HUSKY_GIT_PARAMS"
+    "test:prod": "yarn test -- --no-cache"
   },
   "dependencies": {
-    "react-reconciler": "0.25.1"
+    "react-reconciler": "0.26.2"
   },
   "peerDependencies": {
-    "canvaskit-oc": "^0.0.1-alpha.1"
+    "canvaskit-wasm": "0.32.0",
+    "react": "17.0.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.0.0",
-    "@babel/preset-env": "^7.10.4",
-    "@babel/preset-react": "^7.10.4",
-    "@commitlint/cli": "^9.0.1",
-    "@commitlint/config-conventional": "^9.0.1",
-    "@types/jest": "^26.0.3",
-    "@types/node": "^14.0.14",
-    "@types/react-reconciler": "^0.18.0",
-    "babel-jest": "^26.1.0",
-    "canvaskit-oc": "0.0.1-alpha.1",
-    "colors": "^1.4.0",
-    "commitizen": "^4.1.2",
-    "coveralls": "^3.1.0",
-    "cpy-cli": "^3.1.1",
-    "cross-env": "^7.0.2",
-    "cz-conventional-changelog": "^3.2.0",
-    "gl": "^4.5.2",
-    "husky": "^4.2.5",
-    "jest": "^26.1.0",
-    "jest-config": "^26.1.0",
-    "jest-fetch-mock": "^3.0.3",
-    "lint-staged": "^10.2.11",
-    "prettier": "^2.0.5",
-    "prompt": "^1.0.0",
-    "react-devtools": "^4.7.0",
-    "replace-in-file": "^6.1.0",
+    "@types/node": "^16.4.1",
+    "@types/react-reconciler": "^0.26.3",
+    "canvaskit-wasm": "0.32.0",
+    "prettier": "^2.5.1",
+    "react-devtools": "^4.14.0",
     "rimraf": "^3.0.2",
-    "semantic-release": "^17.1.1",
-    "shelljs": "^0.8.4",
-    "travis-deploy-once": "^5.0.11",
-    "ts-jest": "^26.1.1",
-    "ts-node": "^8.10.2",
-    "tslint": "^6.1.2",
-    "tslint-config-prettier": "^1.18.0",
-    "tslint-config-standard": "^9.0.0",
-    "typedoc": "^0.17.8",
-    "typescript": "^3.9.6"
+    "ts-jest": "^27.1.2",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.3.5"
   },
   "author": "Erik De Rijcke",
   "homepage": "https://github.com/udevbe/react-canvaskit",
@@ -92,57 +55,6 @@
     "url": "https://github.com/udevbe/react-canvaskit"
   },
   "engines": {
-    "node": ">=12.0.0"
-  },
-  "lint-staged": {
-    "{src,test}/**/*.ts": [
-      "prettier --write",
-      "git add"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "compositor-module/node_modules/cz-conventional-changelog"
-    }
-  },
-  "jest": {
-    "transform": {
-      ".(ts|tsx)": "ts-jest"
-    },
-    "testEnvironment": "jsdom",
-    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js"
-    ],
-    "coveragePathIgnorePatterns": [
-      "/node_modules/",
-      "/test/"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 95,
-        "lines": 95,
-        "statements": 95
-      }
-    },
-    "collectCoverageFrom": [
-      "src/*.{js,ts}"
-    ],
-    "automock": false,
-    "setupFiles": [
-      "./setupJest.js"
-    ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
+    "node": ">=14.0.0"
   }
 }

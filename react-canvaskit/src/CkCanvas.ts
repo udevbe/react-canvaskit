@@ -1,4 +1,4 @@
-import type { CanvasKit, SkCanvas } from 'canvaskit-oc'
+import type { Canvas as SkCanvas, CanvasKit } from 'canvaskit-wasm'
 import type { ReactNode } from 'react'
 import { isCkSurface } from './CkSurface'
 import { toSkColor } from './SkiaElementMapping'
@@ -8,12 +8,12 @@ import {
   CkElementCreator,
   CkElementProps,
   CkObjectTyping,
-  Color
+  Color,
 } from './SkiaElementTypes'
 
 export interface CkCanvasProps extends CkElementProps<SkCanvas> {
   clear?: Color | string
-  rotate?: { degree: number, px?: number, py?: number }
+  rotate?: { degree: number; px?: number; py?: number }
   children?: ReactNode
 }
 
@@ -29,15 +29,12 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
 
   private deleted = false
 
-  constructor (
-    canvasKit: CanvasKit,
-    props: CkObjectTyping['ck-canvas']['props']
-  ) {
+  constructor(canvasKit: CanvasKit, props: CkObjectTyping['ck-canvas']['props']) {
     this.canvasKit = canvasKit
     this.props = props
   }
 
-  render (parent: CkElementContainer<any>): void {
+  render(parent: CkElementContainer<any>): void {
     if (this.deleted) {
       throw new Error('BUG. canvas element deleted.')
     }
@@ -52,12 +49,12 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
 
     this.skObject.save()
     this.drawSelf(this.skObject)
-    this.children.forEach(child => child.render(this))
+    this.children.forEach((child) => child.render(this))
     this.skObject.restore()
-    this.skObject.flush()
+    parent.skObject?.flush()
   }
 
-  private drawSelf (skCanvas: SkCanvas) {
+  private drawSelf(skCanvas: SkCanvas) {
     const skColor = toSkColor(this.canvasKit, this.props.clear)
     if (skColor) {
       skCanvas.clear(skColor)
@@ -69,7 +66,7 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
     }
   }
 
-  delete () {
+  delete() {
     if (this.deleted) {
       return
     }
@@ -80,10 +77,12 @@ export class CkCanvas implements CkElementContainer<'ck-canvas'> {
   }
 }
 
-export function isCkCanvas (ckElement: CkElement<any>): ckElement is CkCanvas {
+export function isCkCanvas(ckElement: CkElement<any>): ckElement is CkCanvas {
   return ckElement.type === 'ck-canvas'
 }
 
-export const createCkCanvas: CkElementCreator<'ck-canvas'> =
-  (type, props, canvasKit: CanvasKit): CkElementContainer<'ck-canvas'> =>
-    new CkCanvas(canvasKit, props)
+export const createCkCanvas: CkElementCreator<'ck-canvas'> = (
+  type,
+  props,
+  canvasKit: CanvasKit,
+): CkElementContainer<'ck-canvas'> => new CkCanvas(canvasKit, props)

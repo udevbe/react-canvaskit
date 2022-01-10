@@ -1,4 +1,9 @@
-import type { CanvasKit, SkFontManager, SkParagraph, SkParagraphStyle } from 'canvaskit-oc'
+import type {
+  CanvasKit,
+  FontMgr as SkFontManager,
+  Paragraph as SkParagraph,
+  ParagraphStyle as SkParagraphStyle,
+} from 'canvaskit-wasm'
 import { isCkCanvas } from './CkCanvas'
 import { toSkParagraphStyle } from './SkiaElementMapping'
 import {
@@ -7,15 +12,15 @@ import {
   CkElementCreator,
   CkElementProps,
   CkObjectTyping,
-  ParagraphStyle
+  ParagraphStyle,
 } from './SkiaElementTypes'
 
 export interface CkParagraphProps extends ParagraphStyle, CkElementProps<SkParagraph> {
-  layout: number,
-  x?: number,
-  y?: number,
-  children?: string,
-  fontManager?: SkFontManager
+  layout: number
+  fontManager: SkFontManager
+  x?: number
+  y?: number
+  children?: string
 }
 
 class CkParagraph implements CkElement<'ck-paragraph'> {
@@ -27,19 +32,20 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
 
   deleted = false
 
-  constructor (canvasKit: CanvasKit,
-               props: CkObjectTyping['ck-paragraph']['props']) {
+  constructor(canvasKit: CanvasKit, props: CkObjectTyping['ck-paragraph']['props']) {
     this.canvasKit = canvasKit
     this.props = props
   }
 
-  render (parent: CkElementContainer<any>): void {
+  render(parent: CkElementContainer<any>): void {
     if (this.deleted) {
       throw new Error('BUG. paragraph element deleted.')
     }
 
-    const skParagraphBuilder =
-      this.canvasKit.ParagraphBuilder.Make(<SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props), this.props.fontManager ?? this.canvasKit.SkFontMgr.RefDefault())
+    const skParagraphBuilder = this.canvasKit.ParagraphBuilder.Make(
+      <SkParagraphStyle>toSkParagraphStyle(this.canvasKit, this.props),
+      this.props.fontManager,
+    )
     if (this.props.children) {
       skParagraphBuilder.addText(this.props.children)
     }
@@ -52,7 +58,7 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
     // TODO we can avoid deleting & recreating the paragraph skobject by checkin props that require a new paragraph instance.
   }
 
-  delete () {
+  delete() {
     if (this.deleted) {
       return
     }
@@ -61,6 +67,8 @@ class CkParagraph implements CkElement<'ck-paragraph'> {
   }
 }
 
-export const createCkParagraph: CkElementCreator<'ck-paragraph'> =
-  (type, props, canvasKit): CkElement<'ck-paragraph'> =>
-    new CkParagraph(canvasKit, props)
+export const createCkParagraph: CkElementCreator<'ck-paragraph'> = (
+  type,
+  props,
+  canvasKit,
+): CkElement<'ck-paragraph'> => new CkParagraph(canvasKit, props)
